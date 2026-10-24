@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Residency Request</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #26352b;
+        }
+
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #064e3b;
+            color: white;
+            padding: 24px 15px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-header h1 {
+            color: white;
+            font-size: 25px;
+            margin: 0 0 7px;
+        }
+
+        .top-header p {
+            color: #d1e7dc;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            transition: background 0.2s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 25px auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        h3 {
+            color: #216b3a;
+            margin-top: 25px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+        }
+
+        input[readonly] {
+            background: #f1f3f1;
+            color: #444;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 14px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #667085;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            background: #247b42;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #195d30;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+
+        .success {
+            display: block;
+            background: #e5f6e9;
+            color: #17632b;
+        }
+
+        .error {
+            display: block;
+            background: #ffe8e8;
+            color: #a40000;
+        }
+
+        #photoPreview {
+            display: none;
+            max-width: 150px;
+            max-height: 180px;
+            object-fit: cover;
+            margin-top: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 600px) {
+            .top-header {
+                padding: 70px 15px 22px;
+            }
+
+            .top-header h1 {
+                font-size: 22px;
+            }
+
+            .back-link {
+                top: 12px;
+                left: 12px;
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+
+            .container {
+                margin: 15px 10px;
+                padding: 18px 14px;
+            }
+
+            .address-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top-header">
+    <a href="request.html" class="back-link">
+        <span aria-hidden="true">&#8592;</span>
+        <span>Back to Document Request</span>
+    </a>
+
+    <h1>Certificate of Residency</h1>
+    <p>Barangay Documents Request System</p>
+</header>
+
+<div class="container">
+
+    <p class="subtitle">
+        Please complete the required information to request
+        your Certificate of Residency.
+    </p>
+
+    <form id="residencyForm">
+
+        <h3>Resident Information</h3>
+
+        <label for="residentName">Full Name</label>
+        <input type="text" id="residentName"
+               placeholder="Loading resident name..."
+               readonly required>
+
+        <label for="contactNumber">Contact Number</label>
+        <input type="text" id="contactNumber"
+               placeholder="Loading contact number..."
+               readonly required>
+
+        <div class="address-grid">
+            <div>
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" required>
+            </div>
+
+            <div>
+                <label for="age">Age</label>
+                <input type="number" id="age"
+                       placeholder="Calculated automatically"
+                       readonly required>
+            </div>
+
+            <div>
+                <label for="civilStatus">Civil Status</label>
+                <select id="civilStatus" required>
+                    <option value="">Select civil status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Seperated">Seperated</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Divorced/Annulled">Divorced/Annulled</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="sex">Sex</label>
+                <select id="sex" required>
+                    <option value="">Select sex</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>Complete Address</h3>
+
+        <div class="address-grid">
+            <div class="full-width">
+                <label for="street">House Number / Street</label>
+                <input type="text" id="street"
+                       placeholder="Enter house number and street"
+                       required>
+            </div>
+
+            <div>
+                <label for="barangay">Barangay</label>
+                <input type="text" id="barangay"
+                       placeholder="Enter barangay" required>
+            </div>
+
+            <div>
+                <label for="municipality">Municipality / City</label>
+                <input type="text" id="municipality"
+                       placeholder="Enter municipality or city"
+                       required>
+            </div>
+
+            <div class="full-width">
+                <label for="province">Province</label>
+                <input type="text" id="province"
+                       placeholder="Enter province" required>
+            </div>
+        </div>
+
+        <h3>Request Information</h3>
+
+        <label for="nationality">Nationality</label>
+        <select id="nationality" required>
+            <option value="">Select nationality</option>
+            <option value="Filipino">Filipino</option>
+            <option value="American">American</option>
+            <option value="Australian">Australian</option>
+            <option value="British">British</option>
+            <option value="Brazilian">Brazilian</option>
+            <option value="Canadian">Canadian</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Dutch">Dutch</option>
+            <option value="Egyptian">Egyptian</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+            <option value="Indian">Indian</option>
+            <option value="Indonesian">Indonesian</option>
+            <option value="Iranian">Iranian</option>
+            <option value="Iraqi">Iraqi</option>
+            <option value="Irish">Irish</option>
+            <option value="Israeli">Israeli</option>
+            <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Malaysian">Malaysian</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Nepalese">Nepalese</option>
+            <option value="New Zealander">New Zealander</option>
+            <option value="Nigerian">Nigerian</option>
+            <option value="North Korean">North Korean</option>
+            <option value="Norwegian">Norwegian</option>
+            <option value="Pakistani">Pakistani</option>
+            <option value="Russian">Russian</option>
+            <option value="Saudi Arabian">Saudi Arabian</option>
+            <option value="Singaporean">Singaporean</option>
+            <option value="South African">South African</option>
+            <option value="South Korean">South Korean</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Sri Lankan">Sri Lankan</option>
+            <option value="Swedish">Swedish</option>
+            <option value="Swiss">Swiss</option>
+            <option value="Thai">Thai</option>
+            <option value="Turkish">Turkish</option>
+            <option value="Ukrainian">Ukrainian</option>
+            <option value="Vietnamese">Vietnamese</option>
+        </select>
+
+        <label for="purpose">Purpose of Request</label>
+        <textarea id="purpose"
+                  placeholder="Example: Employment, school requirement, or other purpose"
+                  required></textarea>
+
+        <label for="requestDate">Date of Request</label>
+        <input type="date" id="requestDate" readonly required>
+
+        <p class="note">The request date is filled in automatically.</p>
+
+        <h3>Upload Requirements</h3>
+
+        <label for="idPicture">2×2 ID Picture</label>
+        <input type="file" id="idPicture"
+               accept="image/jpeg,image/png,image/webp"
+               required>
+
+        <p class="note">
+            Upload a clear 2×2 ID picture in JPG, PNG, or WEBP format.
+            Maximum file size: 2 MB.
+        </p>
+
+        <img id="photoPreview" alt="ID picture preview">
+
+        <button type="submit" id="submitButton" disabled>
+            Loading Resident Information...
+        </button>
+
+        <div id="message" class="message" role="status"></div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+
+<script>
+(async function () {
+    const form = document.getElementById("residencyForm");
+    const nameInput = document.getElementById("residentName");
+    const contactInput = document.getElementById("contactNumber");
+    const dobInput = document.getElementById("dateOfBirth");
+    const ageInput = document.getElementById("age");
+    const dateInput = document.getElementById("requestDate");
+    const photoInput = document.getElementById("idPicture");
+    const photoPreview = document.getElementById("photoPreview");
+    const submitButton = document.getElementById("submitButton");
+    const messageBox = document.getElementById("message");
+
+    let currentUser = null;
+    let currentProfile = null;
+    let profileLoaded = false;
+    let previewUrl = null;
+
+    function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = "message " + type;
+        messageBox.style.display = "block";
+    }
+
+    function hideMessage() {
+        messageBox.textContent = "";
+        messageBox.className = "message";
+        messageBox.style.display = "none";
+    }
+
+    function localDateString() {
+        const d = new Date();
+        return [
+            d.getFullYear(),
+            String(d.getMonth() + 1).padStart(2, "0"),
+            String(d.getDate()).padStart(2, "0")
+        ].join("-");
+    }
+
+    dateInput.value = localDateString();
+    dobInput.max = localDateString();
+
+    function calculateAge(showError = true) {
+        const value = dobInput.value;
+
+        if (!value) {
+            ageInput.value = "";
+            return false;
+        }
+
+        const [year, month, day] = value.split("-").map(Number);
+        const birthDate = new Date(year, month - 1, day);
+        const today = new Date();
+        const todayOnly = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+
+        if (
+            birthDate > todayOnly ||
+            birthDate.getFullYear() !== year ||
+            birthDate.getMonth() !== month - 1 ||
+            birthDate.getDate() !== day
+        ) {
+            ageInput.value = "";
+
+            if (showError) {
+                showMessage(
+                    "Please enter a valid date of birth that is not in the future.",
+                    "error"
+                );
+            }
+
+            return false;
+        }
+
+        let age = today.getFullYear() - year;
+
+        if (
+            today.getMonth() < month - 1 ||
+            (today.getMonth() === month - 1 &&
+             today.getDate() < day)
+        ) {
+            age--;
+        }
+
+        ageInput.value = age;
+        return true;
+    }
+
+    dobInput.addEventListener("change", function () {
+        hideMessage();
+        calculateAge();
+    });
+
+    photoInput.addEventListener("change", function () {
+        hideMessage();
+
+        const file = photoInput.files[0];
+
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+        }
+
+        photoPreview.style.display = "none";
+        photoPreview.removeAttribute("src");
+
+        if (!file) return;
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            photoInput.value = "";
+            showMessage(
+                "Please select a JPG, PNG, or WEBP image.",
+                "error"
+            );
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            photoInput.value = "";
+            showMessage(
+                "The ID picture must not exceed 2 MB.",
+                "error"
+            );
+            return;
+        }
+
+        previewUrl = URL.createObjectURL(file);
+        photoPreview.src = previewUrl;
+        photoPreview.style.display = "block";
+    });
+
+    async function loadResidentProfile() {
+        submitButton.disabled = true;
+        submitButton.textContent = "Loading Resident Information...";
+        nameInput.value = "";
+        contactInput.value = "";
+        hideMessage();
+
+        try {
+            if (
+                typeof supabaseClient === "undefined" ||
+                !supabaseClient
+            ) {
+                throw new Error(
+                    "Supabase is not initialized. Check supabase.js."
+                );
+            }
+
+            const {
+                data: sessionData,
+                error: sessionError
+            } = await supabaseClient.auth.getSession();
+
+            if (sessionError) throw sessionError;
+
+            currentUser = sessionData?.session?.user || null;
+
+            if (!currentUser) {
+                throw new Error(
+                    "Your login session was not found. Please log in again."
+                );
+            }
+
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+                .from("users")
+                .select("full_name, contact_number")
+                .eq("auth_user_id", currentUser.id)
+                .maybeSingle();
+
+            if (profileError) throw profileError;
+
+            if (!profile) {
+                throw new Error(
+                    "Resident profile not found. Check the auth_user_id value in your users table."
+                );
+            }
+
+            if (!profile.full_name || !profile.contact_number) {
+                throw new Error(
+                    "Your registered profile is missing a name or contact number."
+                );
+            }
+
+            currentProfile = profile;
+            nameInput.value = profile.full_name;
+            contactInput.value = profile.contact_number;
+
+            profileLoaded = true;
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Residency Request";
+
+        } catch (error) {
+            console.error("Resident profile loading error:", error);
+
+            profileLoaded = false;
+            currentUser = null;
+            currentProfile = null;
+
+            nameInput.value = "";
+            contactInput.value = "";
+            nameInput.placeholder = "Unable to load resident profile";
+            contactInput.placeholder = "Unable to load resident profile";
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Profile Not Loaded";
+
+            showMessage(
+                "Unable to load resident information: " +
+                (error.message || "Please refresh the page."),
+                "error"
+            );
+        }
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        hideMessage();
+
+        if (!profileLoaded || !currentUser || !currentProfile) {
+            showMessage(
+                "Resident information has not loaded. Please log in again.",
+                "error"
+            );
+            return;
+        }
+
+        if (!form.reportValidity()) return;
+        if (!calculateAge()) return;
+
+        const photo = photoInput.files[0];
+
+        if (!photo) {
+            showMessage("Please upload your 2×2 ID picture.", "error");
+            return;
+        }
+
+        if (photo.size > 2 * 1024 * 1024) {
+            showMessage("The ID picture must not exceed 2 MB.", "error");
+            return;
+        }
+
+        const fullAddress = [
+            document.getElementById("street").value.trim(),
+            document.getElementById("barangay").value.trim(),
+            document.getElementById("municipality").value.trim(),
+            document.getElementById("province").value.trim()
+        ].join(", ");
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting Request...";
+
+        let uploadedPhotoPath = null;
+
+        try {
+            const extension = photo.name.split(".").pop().toLowerCase();
+            const safeExtension = [
+                "jpg", "jpeg", "png", "webp"
+            ].includes(extension) ? extension : "jpg";
+
+            const photoPath =
+                currentUser.id + "/" +
+                crypto.randomUUID() + "." + safeExtension;
+
+            const {
+                data: uploadData,
+                error: uploadError
+            } = await supabaseClient.storage
+                .from("resident-photos")
+                .upload(photoPath, photo, {
+                    contentType: photo.type,
+                    upsert: false
+                });
+
+            if (uploadError) throw uploadError;
+
+            uploadedPhotoPath = uploadData.path;
+
+            const requestData = {
+                resident_name: currentProfile.full_name,
+                contact_number: currentProfile.contact_number,
+                document_type: "Certificate of Residency",
+                purpose: document.getElementById("purpose").value.trim(),
+                request_date: dateInput.value,
+                status: "Pending",
+                remarks: "",
+                auth_user_id: currentUser.id,
+                age: Number(ageInput.value),
+                civil_status: document.getElementById("civilStatus").value,
+                address: fullAddress,
+                date_of_birth: dobInput.value,
+                nationality: document.getElementById("nationality").value,
+                sex: document.getElementById("sex").value,
+                id_picture_url: uploadedPhotoPath
+            };
+
+            const { error: insertError } = await supabaseClient
+                .from("document_requests")
+                .insert([requestData]);
+
+            if (insertError) throw insertError;
+
+            showMessage(
+                "Your Certificate of Residency request was submitted successfully! Current status: Pending.",
+                "success"
+            );
+
+            form.reset();
+            nameInput.value = currentProfile.full_name;
+            contactInput.value = currentProfile.contact_number;
+            dateInput.value = localDateString();
+            dobInput.max = localDateString();
+            ageInput.value = "";
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
+
+            photoPreview.style.display = "none";
+            photoPreview.removeAttribute("src");
+
+        } catch (error) {
+            console.error("Residency request submission error:", error);
+
+            if (uploadedPhotoPath) {
+                const {
+                    error: cleanupError
+                } = await supabaseClient.storage
+                    .from("resident-photos")
+                    .remove([uploadedPhotoPath]);
+
+                if (cleanupError) {
+                    console.error("Photo cleanup error:", cleanupError);
+                }
+            }
+
+            showMessage(
+                "Unable to submit request: " +
+                (error.message || "Please try again."),
+                "error"
+            );
+        } finally {
+            submitButton.disabled = !profileLoaded;
+            submitButton.textContent = profileLoaded
+                ? "Submit Residency Request"
+                : "Profile Not Loaded";
+        }
+    });
+
+    await loadResidentProfile();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Dashboard</title>
+
+<style>
+*{box-sizing:border-box}
+
+:root{
+  --primary:#064e3b;
+  --hover:#043d2e;
+  --bg:#f3f7f4;
+  --text:#202b25;
+  --muted:#6b776f;
+  --border:#e1e8e3;
+  --danger:#b42318;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:var(--primary);
+  color:#fff;
+  padding:18px 25px;
+  box-shadow:0 3px 10px #0002;
+}
+
+.topbar-inner{
+  max-width:1500px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.brand-title{
+  margin:0;
+  font-size:22px;
+  font-weight:bold;
+}
+
+button{
+  padding:10px 14px;
+  border:0;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:600;
+  margin:3px;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.logout{
+  background:white;
+  color:var(--primary);
+}
+
+.container{
+  max-width:1500px;
+  margin:30px auto;
+  padding:20px;
+}
+
+.card{
+  background:#fff;
+  padding:28px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  box-shadow:0 3px 12px #0001;
+}
+
+h1,h2{color:var(--primary)}
+h1{margin:0 0 10px}
+
+.subtitle{
+  color:var(--muted);
+  margin-bottom:25px;
+  line-height:1.6;
+}
+
+.primary-btn,.approve,.view-btn{
+  background:var(--primary);
+  color:#fff;
+}
+
+.reject{
+  background:var(--danger);
+  color:#fff;
+}
+
+.back-btn{
+  background:#e6f1e9;
+  color:var(--primary);
+  border:1px solid #c7dfcf;
+  margin:0 0 20px;
+}
+
+.table-container{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.request-list-table{min-width:700px}
+.details-table{min-width:1750px}
+
+th,td{
+  padding:13px;
+  border:1px solid var(--border);
+  text-align:left;
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+
+th{
+  background:var(--primary);
+  color:#fff;
+  white-space:nowrap;
+}
+
+tbody tr:nth-child(even){background:#f5f8f5}
+
+.request-name{
+  color:var(--primary);
+  font-weight:bold;
+}
+
+.status{font-weight:bold}
+
+.message{
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+}
+
+.action-cell{min-width:230px}
+.remarks-cell{min-width:180px}
+.photo-cell{min-width:130px}
+
+.resident-photo{
+  display:block;
+  width:100px;
+  height:120px;
+  object-fit:cover;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:#f5f5f5;
+}
+
+.photo-note,.file-note{
+  display:block;
+  max-width:220px;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.5;
+}
+
+.remarks-input{
+  display:block;
+  width:190px;
+  min-height:75px;
+  padding:9px;
+  margin:5px 0;
+  border:1px solid #cbd5ce;
+  border-radius:6px;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  resize:vertical;
+}
+
+.hidden{display:none!important}
+
+#pdfTemplateHost{
+  position:fixed;
+  left:-10000px;
+  top:0;
+  width:794px;
+  background:#fff;
+  color:#171717;
+  z-index:-1;
+  pointer-events:none;
+}
+
+.template-paper{
+  width:210mm;
+  min-height:297mm;
+  margin:0;
+  padding:25mm 25mm 22mm;
+  background:#fff;
+  color:#171717;
+  font-family:"Times New Roman",serif;
+  font-size:16px;
+  line-height:1.65;
+  box-shadow:none;
+}
+
+.template-letterhead{
+  text-align:center;
+  line-height:1.3;
+  margin-bottom:22px;
+}
+
+.template-letterhead p{margin:0}
+
+.template-barangay-name{
+  font-size:20px;
+  font-weight:bold;
+  text-transform:uppercase;
+  margin-top:5px!important;
+}
+
+.template-office{
+  text-align:center;
+  font-weight:bold;
+  margin-top:16px;
+}
+
+.template-doc-title{
+  text-align:center;
+  font-size:21px;
+  font-weight:bold;
+  text-decoration:underline;
+  margin:25px 0 42px;
+}
+
+.template-salutation{
+  font-weight:bold;
+  margin-bottom:22px;
+}
+
+.template-body-copy{
+  text-align:justify;
+  text-indent:45px;
+  margin:0 0 20px;
+  line-height:1.8;
+}
+
+.template-issued{
+  text-align:justify;
+  text-indent:45px;
+  margin-top:30px;
+  line-height:1.8;
+}
+
+.template-resident-value{
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-weight:normal;
+  overflow-wrap:anywhere;
+}
+
+.template-signature-area{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:75px;
+  page-break-inside:avoid;
+}
+
+.template-signature{
+  width:235px;
+  text-align:center;
+  line-height:1.35;
+}
+
+.template-signature-line{
+  border-top:1px solid #222;
+  margin-bottom:6px;
+}
+
+/* SAMPLE CURSIVE-STYLE SIGNATORY NAME */
+.template-signature-script{
+  font-family:"Brush Script MT","Segoe Script",cursive;
+  font-size:30px;
+  font-style:italic;
+  font-weight:normal;
+  line-height:1.2;
+  margin-bottom:5px;
+  color:#171717;
+}
+
+/* BARANGAY ID TEMPLATE */
+.template-id-card{
+  position:relative;
+  overflow:hidden;
+  width:190mm;
+  min-height:110mm;
+  margin:0;
+  padding:12mm;
+  background:linear-gradient(
+    135deg,
+    #91dcf8 0%,
+    #5cc1ed 48%,
+    #2ca7df 100%
+  );
+  border:2px solid #237ba4;
+  box-shadow:inset 0 0 0 4px #ffffff55;
+  color:#172033;
+  font-family:Arial,sans-serif;
+}
+
+.template-id-card::before,
+.template-id-card::after{
+  content:"";
+  position:absolute;
+  border:1px solid #ffffff55;
+  border-radius:50%;
+  width:190px;
+  height:190px;
+  right:-55px;
+  bottom:-95px;
+  pointer-events:none;
+}
+
+.template-id-card::after{
+  width:130px;
+  height:130px;
+  right:-25px;
+  bottom:-65px;
+}
+
+.template-id-head{
+  position:relative;
+  min-height:38px;
+  text-align:center;
+  line-height:1.45;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.template-id-title{
+  position:relative;
+  text-align:center;
+  font-size:21px;
+  font-weight:bold;
+  margin:10px 0 18px;
+}
+
+.template-id-fields{
+  position:relative;
+  z-index:1;
+  width:calc(100% - 125px);
+}
+
+.template-id-field{
+  margin:10px 0;
+  font-size:12px;
+  line-height:1.4;
+}
+
+.template-id-value{
+  display:inline-block;
+  min-width:85px;
+  border-bottom:1px solid #172033;
+  padding:0 4px 2px;
+  font-weight:bold;
+  overflow-wrap:anywhere;
+}
+
+.template-id-photo{
+  position:absolute;
+  z-index:2;
+  top:37mm;
+  right:12mm;
+  width:30mm;
+  height:40mm;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid white;
+  background:#eef2f5;
+  text-align:center;
+  font:11px Arial,sans-serif;
+}
+
+.template-id-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.template-id-photo-label{
+  position:absolute;
+  z-index:2;
+  top:79mm;
+  right:8mm;
+  width:38mm;
+  text-align:center;
+  font-size:10px;
+}
+
+.template-id-bottom{
+  position:relative;
+  z-index:2;
+  margin-top:8px;
+  font-size:10px;
+}
+
+@media(max-width:600px){
+  .topbar{padding:15px}
+  .brand-title{font-size:18px}
+  .container{margin:15px auto;padding:10px}
+  .card{padding:18px 12px}
+  h1{font-size:23px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <p class="brand-title">Staff Dashboard</p>
+    <button class="logout" type="button" id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<main class="container">
+<section class="card">
+
+  <div id="requestListPage">
+    <h1>Document Requests</h1>
+    <p class="subtitle">
+      View resident document requests and select a request to review its details.
+    </p>
+
+    <div class="table-container">
+      <table class="request-list-table">
+        <thead>
+          <tr>
+            <th>Resident Name</th>
+            <th>Document Type</th>
+            <th>Request Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="requestListTable">
+          <tr>
+            <td colspan="5" class="message">Loading document requests...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="requestDetailsPage" class="hidden">
+    <button class="back-btn" type="button" id="backToRequestsBtn">
+      &#8592; Back to Document Requests
+    </button>
+
+    <h1>Request Details</h1>
+    <p class="subtitle">
+      Review the resident information, save remarks, and approve or reject the request.
+    </p>
+
+    <div class="table-container">
+      <table class="details-table">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Remarks</th>
+            <th>Status</th>
+            <th>Resident Name</th>
+            <th>Resident Photo</th>
+            <th>Contact</th>
+            <th>Document</th>
+            <th>Age</th>
+            <th>Civil Status</th>
+            <th>Sex</th>
+            <th>Nationality</th>
+            <th>Complete Address</th>
+            <th>Purpose</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="requestDetailsTable">
+          <tr>
+            <td colspan="14" class="message">
+              Select a request to view its details.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+</main>
+
+<!-- EMBEDDED DOCUMENT TEMPLATES -->
+<div id="pdfTemplateHost">
+
+  <!-- CERTIFICATE OF INDIGENCY -->
+  <section class="template-paper hidden" id="pdf-indigency">
+
+    <header class="template-letterhead">
+      <p>Republic of the Philippines</p>
+      <p>Province of Palawan</p>
+      <p>Municipality of Dumaran</p>
+      <p class="template-barangay-name">Barangay Bohol</p>
+    </header>
+
+    <div class="template-office">OFFICE OF THE PUNONG BARANGAY</div>
+
+    <div class="template-doc-title">CERTIFICATE OF INDIGENCY</div>
+
+    <div class="template-salutation">TO WHOM IT MAY CONCERN:</div>
+
+    <p class="template-body-copy">
+      <b>THIS IS TO CERTIFY</b> that
+      <span class="template-resident-value" data-field="full_name">Resident Full Name</span>,
+      <span class="template-resident-value" data-field="age">Age</span> years old,
+      <span class="template-resident-value" data-field="civil_status">Civil Status</span>
+      and a bona fide resident registered member of Barangay Bohol,
+      Dumaran, Palawan is known to the undersigned to be a good moral
+      and a law-abiding citizen of this community.
+    </p>
+
+    <p class="template-body-copy">
+      <b>THIS FURTHER</b> certifies that to the best of my knowledge,
+      his/her family belongs to <b>INDIGENT FAMILY.</b>
+    </p>
+
+    <p class="template-body-copy">
+      <b>THIS CERTIFICATION</b> is issued upon the request of
+      <span class="template-resident-value" data-field="full_name">Resident Full Name</span>
+      for <span class="template-resident-value" data-field="purpose">Purpose</span>
+      and whatever legal purposes it may serve her/him best.
+    </p>
+
+    <p class="template-issued">
+      Issued this
+      <span class="template-resident-value" data-field="issue_date">Date</span>
+      at Barangay Bohol, Dumaran, Palawan.
+    </p>
+
+    <div class="template-signature-area">
+      <div class="template-signature">
+        <div class="template-signature-script">Juan Dela Cruz</div>
+        <div class="template-signature-line"></div>
+        <b>PUNONG BARANGAY</b>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- BARANGAY CLEARANCE -->
+  <section class="template-paper hidden" id="pdf-clearance">
+
+    <header class="template-letterhead">
+      <p>Republic of the Philippines</p>
+      <p>Province of Palawan</p>
+      <p>Municipality of Dumaran</p>
+      <p class="template-barangay-name">Barangay Bohol</p>
+    </header>
+
+    <div class="template-office">OFFICE OF THE BARANGAY CAPTAIN</div>
+
+    <div class="template-doc-title">BARANGAY CLEARANCE</div>
+
+    <div class="template-salutation" style="font-weight:normal">
+      TO WHOM IT MAY CONCERN:
+    </div>
+
+    <p class="template-body-copy">
+      This is to certify that
+      <span class="template-resident-value" data-field="full_name">Resident Full Name</span>,
+      <span class="template-resident-value" data-field="age">Age</span> years old,
+      <span class="template-resident-value" data-field="gender">Gender</span>
+      and a resident of
+      <span class="template-resident-value" data-field="address">Complete Address</span>
+      is known to be of good moral character and a law-abiding citizen
+      in the community.
+    </p>
+
+    <p class="template-body-copy">
+      To certify further, that he/she has no derogatory and/or
+      criminal records filed in this barangay.
+    </p>
+
+    <p class="template-issued">
+      <b>ISSUED</b> this
+      <span class="template-resident-value" data-field="issue_date">Date</span>
+      at Barangay Bohol, Dumaran, Palawan, upon request of the
+      interested party for whatever legal purposes it may serve.
+    </p>
+
+    <div class="template-signature-area">
+      <div class="template-signature">
+        <div class="template-signature-script">Juan Dela Cruz</div>
+        <div class="template-signature-line"></div>
+        <b>BARANGAY CAPTAIN</b>
+      </div>
+    </div>
+
+    <div style="font-size:12px;margin-top:35px">
+      <p>OR No.: <span class="template-resident-value" data-field="or_number">________________</span></p>
+      <p>Date Issued: <span class="template-resident-value" data-field="or_date">________________</span></p>
+    </div>
+
+  </section>
+
+  <!-- CERTIFICATE OF RESIDENCY -->
+  <section class="template-paper hidden" id="pdf-residency">
+
+    <header class="template-letterhead">
+      <p>Republic of the Philippines</p>
+      <p>Province of Palawan</p>
+      <p>Municipality of Dumaran</p>
+      <p class="template-barangay-name">Barangay Bohol</p>
+    </header>
+
+    <div class="template-office">OFFICE OF THE BARANGAY CAPTAIN</div>
+
+    <div class="template-doc-title">CERTIFICATE OF RESIDENCY</div>
+
+    <div class="template-salutation">TO WHOM IT MAY CONCERN:</div>
+
+    <p class="template-body-copy">
+      This is to certify that
+      <span class="template-resident-value" data-field="full_name">Resident Full Name</span>,
+      of legal age,
+      <span class="template-resident-value" data-field="civil_status">Civil Status</span>,
+      <span class="template-resident-value" data-field="nationality">Nationality</span>,
+      is a bona fide resident of Barangay Bohol, Dumaran, Palawan.
+    </p>
+
+    <p class="template-body-copy">
+      Based on records of this office, the above-named person has been
+      residing at
+      <span class="template-resident-value" data-field="address">Complete Address</span>.
+      This certification is issued upon the request of the above-named
+      person for <span class="template-resident-value" data-field="purpose">Purpose</span>.
+    </p>
+
+    <p class="template-issued">
+      Issued this
+      <span class="template-resident-value" data-field="issue_date">Date</span>
+      at Barangay Bohol, Dumaran, Palawan, Philippines.
+    </p>
+
+    <div class="template-signature-area">
+      <div class="template-signature">
+        <div class="template-signature-script">Juan Dela Cruz</div>
+        <div class="template-signature-line"></div>
+        <b>BARANGAY CAPTAIN</b>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- BARANGAY ID -->
+  <section class="template-id-card hidden" id="pdf-id">
+
+    <header class="template-id-head">
+      REPUBLIC OF THE PHILIPPINES<br>
+      BARANGAY BOHOL - MUNICIPALITY OF DUMARAN
+    </header>
+
+    <div class="template-id-title">BARANGAY RESIDENT'S CARD</div>
+
+    <div class="template-id-fields">
+
+      <div class="template-id-field">
+        <strong>FULL NAME:</strong><br>
+        <span class="template-id-value" data-field="full_name">Resident Full Name</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>DATE OF BIRTH:</strong>
+        <span class="template-id-value" data-field="date_of_birth">Date of Birth</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>CIVIL STATUS:</strong>
+        <span class="template-id-value" data-field="civil_status">Civil Status</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>GENDER:</strong>
+        <span class="template-id-value" data-field="gender">Gender</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>RESIDENT ID NO.:</strong>
+        <span class="template-id-value" data-field="resident_id">ID Number</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>PRECINCT NO.:</strong>
+        <span class="template-id-value" data-field="precinct_no">—</span>
+      </div>
+
+      <div class="template-id-field">
+        <strong>ADDRESS:</strong><br>
+        <span class="template-id-value" data-field="address">Complete Address</span>
+      </div>
+
+    </div>
+
+    <div class="template-id-photo" id="pdfPhotoBox">2×2 ID PICTURE</div>
+    <div class="template-id-photo-label">2×2 ID PICTURE</div>
+
+    <div class="template-id-bottom">
+      For authorized barangay verification and issuance.
+    </div>
+
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="./supabase.js"></script>
+
+<script>
+const BARANGAY_NAME = "Barangay Bohol";
+const MUNICIPALITY_NAME = "Dumaran";
+const PROVINCE_NAME = "Palawan";
+
+const BUCKET_NAME = "completed-documents";
+const RESIDENT_PHOTO_BUCKET = "resident-photos";
+
+const requestListPage = document.getElementById("requestListPage");
+const requestDetailsPage = document.getElementById("requestDetailsPage");
+const requestListTable = document.getElementById("requestListTable");
+const requestDetailsTable = document.getElementById("requestDetailsTable");
+const logoutBtn = document.getElementById("logoutBtn");
+const backToRequestsBtn = document.getElementById("backToRequestsBtn");
+
+let requestsCache = [];
+let selectedRequestId = null;
+let processingRequest = false;
+
+async function requireSession(){
+  const {data,error} = await supabaseClient.auth.getSession();
+
+  if(error) throw error;
+
+  if(!data.session){
+    window.location.href = "login.html";
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
+  return data.session;
+}
+
+function makeCell(value){
+  const cell = document.createElement("td");
+
+  cell.textContent =
+    value !== null && value !== undefined && value !== ""
+      ? String(value)
+      : "-";
+
+  return cell;
+}
+
+function showListMessage(message){
+  requestListTable.replaceChildren();
+
+  const row = document.createElement("tr");
+  const cell = document.createElement("td");
+
+  cell.colSpan = 5;
+  cell.className = "message";
+  cell.textContent = message;
+
+  row.appendChild(cell);
+  requestListTable.appendChild(row);
+}
+
+function showDetailsMessage(message){
+  requestDetailsTable.replaceChildren();
+
+  const row = document.createElement("tr");
+  const cell = document.createElement("td");
+
+  cell.colSpan = 14;
+  cell.className = "message";
+  cell.textContent = message;
+
+  row.appendChild(cell);
+  requestDetailsTable.appendChild(row);
+}
+
+function showRequestList(){
+  selectedRequestId = null;
+  requestDetailsPage.classList.add("hidden");
+  requestListPage.classList.remove("hidden");
+}
+
+function openRequestDetails(id){
+  selectedRequestId = id;
+  requestListPage.classList.add("hidden");
+  requestDetailsPage.classList.remove("hidden");
+  renderSelectedRequest();
+}
+
+async function loadRequests(){
+  showListMessage("Loading document requests...");
+
+  try{
+    await requireSession();
+
+    const {data,error} = await supabaseClient
+      .from("document_requests")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+    if(error) throw error;
+
+    requestsCache = data || [];
+    renderRequestList();
+
+    if(selectedRequestId !== null){
+      if(requestsCache.some(
+        r => String(r.id) === String(selectedRequestId)
+      )){
+        await renderSelectedRequest();
+      }else{
+        showRequestList();
+      }
+    }
+
+  }catch(error){
+    console.error("Loading requests error:",error);
+    showListMessage("Failed to load requests.");
+
+    alert(
+      "Unable to load requests: " +
+      (error.message || "Unknown error.")
+    );
+  }
+}
+
+function renderRequestList(){
+  requestListTable.replaceChildren();
+
+  if(!requestsCache.length){
+    showListMessage("No document requests found.");
+    return;
+  }
+
+  requestsCache.forEach(request => {
+    const row = document.createElement("tr");
+
+    const name = makeCell(
+      request.resident_name || "Unknown Resident"
+    );
+
+    name.className = "request-name";
+
+    row.appendChild(name);
+    row.appendChild(makeCell(request.document_type));
+    row.appendChild(makeCell(request.request_date));
+
+    const status = makeCell(request.status || "Pending");
+    status.className = "status";
+
+    row.appendChild(status);
+
+    const action = document.createElement("td");
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "view-btn";
+    button.textContent = "View Details";
+
+    button.addEventListener(
+      "click",
+      () => openRequestDetails(request.id)
+    );
+
+    action.appendChild(button);
+    row.appendChild(action);
+    requestListTable.appendChild(row);
+  });
+}
+
+async function getResidentPhotoUrl(photoValue){
+  if(!photoValue || typeof photoValue !== "string"){
+    return null;
+  }
+
+  const path = photoValue.trim();
+
+  if(!path) return null;
+
+  if(/^https?:\/\//i.test(path)){
+    return path;
+  }
+
+  const cleanPath = path
+    .replace(/^resident-photos\//,"")
+    .replace(/^\/+/,"");
+
+  const {data,error} = await supabaseClient
+    .storage
+    .from(RESIDENT_PHOTO_BUCKET)
+    .createSignedUrl(cleanPath,3600);
+
+  if(error){
+    console.error("Resident photo URL error:",error);
+    return null;
+  }
+
+  return data?.signedUrl || null;
+}
+
+async function displayResidentPhoto(cell,request){
+  const path =
+    request.id_picture_url ||
+    request.resident_photo_path ||
+    request.photo_path ||
+    null;
+
+  if(!path){
+    const note = document.createElement("span");
+    note.className = "photo-note";
+    note.textContent = "No photo path saved for this request.";
+    cell.appendChild(note);
+    return;
+  }
+
+  const url = await getResidentPhotoUrl(path);
+
+  if(!url){
+    const note = document.createElement("span");
+    note.className = "photo-note";
+    note.textContent =
+      "Photo unavailable. Check Storage path and permissions.";
+    cell.appendChild(note);
+    return;
+  }
+
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+
+  const img = document.createElement("img");
+
+  img.src = url;
+  img.alt = "Resident ID picture";
+  img.className = "resident-photo";
+  img.loading = "lazy";
+
+  img.onerror = () => {
+    link.replaceChildren();
+
+    const note = document.createElement("span");
+    note.className = "photo-note";
+    note.textContent = "Unable to display photo.";
+
+    link.appendChild(note);
+  };
+
+  link.appendChild(img);
+  cell.appendChild(link);
+
+  const note = document.createElement("span");
+  note.className = "photo-note";
+  note.textContent = "Click photo to enlarge";
+
+  cell.appendChild(note);
+}
+
+async function renderSelectedRequest(){
+  if(selectedRequestId === null) return;
+
+  const request = requestsCache.find(
+    r => String(r.id) === String(selectedRequestId)
+  );
+
+  if(!request){
+    showDetailsMessage("This request could not be found.");
+    return;
+  }
+
+  showDetailsMessage("Loading request details...");
+
+  const row = document.createElement("tr");
+  const action = document.createElement("td");
+
+  action.className = "action-cell";
+
+  const status = String(
+    request.status || "Pending"
+  ).toLowerCase();
+
+  if(status !== "approved" && status !== "rejected"){
+    const approveButton = document.createElement("button");
+
+    approveButton.type = "button";
+    approveButton.className = "approve";
+    approveButton.textContent = "Approve";
+
+    approveButton.addEventListener(
+      "click",
+      () => updateStatus(request.id,"Approved")
+    );
+
+    const rejectButton = document.createElement("button");
+
+    rejectButton.type = "button";
+    rejectButton.className = "reject";
+    rejectButton.textContent = "Reject";
+
+    rejectButton.addEventListener(
+      "click",
+      () => updateStatus(request.id,"Rejected")
+    );
+
+    action.append(approveButton,rejectButton);
+
+  }else{
+    const note = document.createElement("span");
+    note.className = "file-note";
+
+    note.textContent = status === "approved"
+      ? (
+          request.document_file_path
+            ? "PDF saved. Resident can download it from Check Request Status."
+            : "Approved, but PDF path is missing."
+        )
+      : "This request has been rejected.";
+
+    action.appendChild(note);
+  }
+
+  row.appendChild(action);
+
+  const remarksCell = document.createElement("td");
+  remarksCell.className = "remarks-cell";
+
+  const remarksText = document.createElement("div");
+  remarksText.textContent = request.remarks || "-";
+
+  remarksCell.appendChild(remarksText);
+
+  if(status !== "approved" && status !== "rejected"){
+    const input = document.createElement("textarea");
+
+    input.className = "remarks-input";
+    input.placeholder = "Optional remarks";
+    input.setAttribute("aria-label","Remarks for this request");
+    input.value = request.remarks || "";
+
+    const saveButton = document.createElement("button");
+
+    saveButton.type = "button";
+    saveButton.className = "primary-btn";
+    saveButton.textContent = "Save Remarks";
+
+    saveButton.addEventListener(
+      "click",
+      () => saveRemarks(request.id,input.value,saveButton)
+    );
+
+    remarksCell.append(input,saveButton);
+  }
+
+  row.appendChild(remarksCell);
+
+  const statusCell = makeCell(request.status || "Pending");
+  statusCell.className = "status";
+
+  row.appendChild(statusCell);
+  row.appendChild(makeCell(request.resident_name));
+
+  const photoCell = document.createElement("td");
+  photoCell.className = "photo-cell";
+
+  row.appendChild(photoCell);
+  row.appendChild(makeCell(request.contact_number));
+  row.appendChild(makeCell(request.document_type));
+  row.appendChild(makeCell(request.age));
+  row.appendChild(makeCell(request.civil_status));
+  row.appendChild(makeCell(request.sex || request.gender));
+  row.appendChild(makeCell(request.nationality));
+  row.appendChild(makeCell(request.address));
+  row.appendChild(makeCell(request.purpose));
+  row.appendChild(makeCell(request.request_date));
+
+  requestDetailsTable.replaceChildren();
+  requestDetailsTable.appendChild(row);
+
+  await displayResidentPhoto(photoCell,request);
+}
+
+async function saveRemarks(id,remarks,button){
+  const value = remarks.trim();
+
+  if(!value){
+    alert("Please enter remarks before saving.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  try{
+    await requireSession();
+
+    const {error} = await supabaseClient
+      .from("document_requests")
+      .update({remarks:value})
+      .eq("id",id);
+
+    if(error) throw error;
+
+    alert("Remarks saved successfully.");
+    await loadRequests();
+
+  }catch(error){
+    console.error(error);
+
+    alert(
+      "Failed to save remarks: " +
+      (error.message || "Unknown error.")
+    );
+
+    button.disabled = false;
+    button.textContent = "Save Remarks";
+  }
+}
+
+function safeFilePart(value){
+  return String(value || "document")
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g,"-")
+    .replace(/^-+|-+$/g,"");
+}
+
+function getTemplateType(documentType){
+  const type = String(documentType || "")
+    .trim()
+    .toLowerCase();
+
+  if(type.includes("indigency")) return "indigency";
+  if(type.includes("residency")) return "residency";
+  if(type.includes("clearance")) return "clearance";
+
+  if(
+    type.includes("barangay id") ||
+    type.includes("resident id") ||
+    type === "id" ||
+    type.includes("barangay identification")
+  ){
+    return "id";
+  }
+
+  throw new Error(
+    "Unrecognized document type: " + documentType
+  );
+}
+
+function formatTemplateDate(value){
+  if(!value) return "";
+
+  const raw = String(value);
+  let date;
+
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if(match){
+    date = new Date(
+      Number(match[1]),
+      Number(match[2])-1,
+      Number(match[3])
+    );
+  }else{
+    date = new Date(raw);
+  }
+
+  if(Number.isNaN(date.getTime())){
+    return raw;
+  }
+
+  return date.toLocaleDateString("en-PH",{
+    day:"numeric",
+    month:"long",
+    year:"numeric"
+  });
+}
+
+function setEmbeddedTemplateData(request,photoUrl){
+  const data = {
+    full_name:
+      request.resident_name ||
+      request.full_name ||
+      "",
+
+    age: request.age ?? "",
+
+    civil_status:
+      request.civil_status || "",
+
+    gender:
+      request.sex ||
+      request.gender ||
+      "",
+
+    address:
+      request.address || "",
+
+    purpose:
+      request.purpose || "",
+
+    nationality:
+      request.nationality || "Filipino",
+
+    issue_date: new Date().toLocaleDateString("en-PH",{
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    }),
+
+    date_of_birth:
+      formatTemplateDate(request.date_of_birth),
+
+    resident_id:
+      request.resident_id ||
+      request.id ||
+      "",
+
+    precinct_no:
+      request.precinct_no || "—",
+
+    or_number:
+      request.or_number || "________",
+
+    or_date:
+      formatTemplateDate(request.or_date) ||
+      "________"
+  };
+
+  document.querySelectorAll(
+    "#pdfTemplateHost [data-field]"
+  ).forEach(element => {
+    const value = data[element.dataset.field];
+
+    element.textContent =
+      value === null ||
+      value === undefined ||
+      String(value).trim() === ""
+        ? "—"
+        : String(value);
+  });
+
+  const photoBox = document.getElementById("pdfPhotoBox");
+  photoBox.replaceChildren();
+
+  if(photoUrl){
+    const image = document.createElement("img");
+
+    image.src = photoUrl;
+    image.alt = "Resident ID picture";
+
+    photoBox.appendChild(image);
+  }else{
+    photoBox.textContent = "2×2 ID PICTURE";
+  }
+}
+
+async function waitForTemplateImages(element){
+  const images = Array.from(element.querySelectorAll("img"));
+
+  await Promise.all(images.map(image => {
+    if(image.complete && image.naturalWidth > 0){
+      return Promise.resolve();
+    }
+
+    return new Promise(resolve => {
+      let finished = false;
+
+      const finish = () => {
+        if(finished) return;
+
+        finished = true;
+        clearTimeout(timer);
+
+        image.onload = null;
+        image.onerror = null;
+
+        resolve();
+      };
+
+      const timer = setTimeout(finish,10000);
+
+      image.onload = finish;
+      image.onerror = finish;
+
+      if(image.complete){
+        finish();
+      }
+    });
+  }));
+}
+
+async function generateCertificatePdf(request){
+  if(!window.jspdf || !window.jspdf.jsPDF){
+    throw new Error("PDF library failed to load. Check your internet connection.");
+  }
+
+  if(typeof window.html2canvas !== "function"){
+    throw new Error("html2canvas failed to load. Check your internet connection.");
+  }
+
+  const templateType = getTemplateType(request.document_type);
+
+  const templateElement = document.getElementById(
+    "pdf-" + templateType
+  );
+
+  if(!templateElement){
+    throw new Error(
+      "Embedded template not found for " +
+      request.document_type + "."
+    );
+  }
+
+  const photoPath =
+    request.id_picture_url ||
+    request.resident_photo_path ||
+    request.photo_path ||
+    "";
+
+  let photoUrl = "";
+
+  if(photoPath){
+    photoUrl = await getResidentPhotoUrl(photoPath) || "";
+  }
+
+  setEmbeddedTemplateData(request,photoUrl);
+
+  [
+    "pdf-indigency",
+    "pdf-clearance",
+    "pdf-residency",
+    "pdf-id"
+  ].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+
+  templateElement.classList.remove("hidden");
+
+  try{
+    await waitForTemplateImages(templateElement);
+
+    await new Promise(resolve => requestAnimationFrame(
+      () => requestAnimationFrame(resolve)
+    ));
+
+    const canvas = await window.html2canvas(templateElement,{
+      scale:2,
+      useCORS:true,
+      allowTaint:false,
+      backgroundColor:"#ffffff",
+      logging:false,
+      scrollX:0,
+      scrollY:0
+    });
+
+    if(!canvas.width || !canvas.height){
+      throw new Error("The selected document template is blank.");
+    }
+
+    const imageData = canvas.toDataURL("image/jpeg",0.95);
+    const {jsPDF} = window.jspdf;
+
+    let pdf;
+
+    if(templateType === "id"){
+      const widthMM = 150;
+      const heightMM = widthMM * (canvas.height / canvas.width);
+
+      pdf = new jsPDF({
+        orientation:widthMM > heightMM ? "landscape" : "portrait",
+        unit:"mm",
+        format:[widthMM,heightMM]
+      });
+
+      pdf.addImage(
+        imageData,
+        "JPEG",
+        0,
+        0,
+        widthMM,
+        heightMM
+      );
+
+    }else{
+      pdf = new jsPDF({
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+      });
+
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 5;
+
+      const maxWidth = pageWidth - margin * 2;
+      const maxHeight = pageHeight - margin * 2;
+
+      const ratio = Math.min(
+        maxWidth / canvas.width,
+        maxHeight / canvas.height
+      );
+
+      const width = canvas.width * ratio;
+      const height = canvas.height * ratio;
+      const x = (pageWidth - width) / 2;
+      const y = (pageHeight - height) / 2;
+
+      pdf.addImage(
+        imageData,
+        "JPEG",
+        x,
+        y,
+        width,
+        height
+      );
+    }
+
+    return pdf.output("blob");
+
+  }finally{
+    templateElement.classList.add("hidden");
+  }
+}
+
+async function approveAndGenerate(request){
+  const {data:existing,error:fetchError} = await supabaseClient
+    .from("document_requests")
+    .select("*")
+    .eq("id",request.id)
+    .maybeSingle();
+
+  if(fetchError) throw fetchError;
+
+  if(!existing){
+    throw new Error("Request record could not be found.");
+  }
+
+  const currentStatus = String(
+    existing.status || "Pending"
+  ).toLowerCase();
+
+  if(currentStatus === "approved"){
+    throw new Error("This request has already been approved.");
+  }
+
+  if(currentStatus === "rejected"){
+    throw new Error("This request has already been rejected.");
+  }
+
+  const blob = await generateCertificatePdf(existing);
+
+  const path =
+    String(existing.id) + "/" +
+    Date.now() + "_" +
+    safeFilePart(existing.document_type) +
+    ".pdf";
+
+  const {data:uploadData,error:uploadError} = await supabaseClient
+    .storage
+    .from(BUCKET_NAME)
+    .upload(path,blob,{
+      cacheControl:"3600",
+      upsert:false,
+      contentType:"application/pdf"
+    });
+
+  if(uploadError){
+    throw new Error(
+      "The PDF was generated, but uploading it failed: " +
+      uploadError.message
+    );
+  }
+
+  const savedPath = uploadData.path;
+
+  const {data:updated,error:updateError} = await supabaseClient
+    .from("document_requests")
+    .update({
+      status:"Approved",
+      remarks:"Request approved. Generated PDF is available for download.",
+      document_file_path:savedPath
+    })
+    .eq("id",existing.id)
+    .select("id,status,document_file_path")
+    .maybeSingle();
+
+  if(updateError || !updated){
+    throw new Error(
+      "The PDF was uploaded, but the request record could not be updated. " +
+      (updateError?.message || "Check your database UPDATE permissions.")
+    );
+  }
+
+  return updated;
+}
+
+async function updateStatus(id,newStatus){
+  if(processingRequest) return;
+
+  let remarks = "";
+
+  if(newStatus === "Rejected"){
+    const reason = prompt(
+      "Enter the reason for rejecting this request:"
+    );
+
+    if(reason === null) return;
+
+    remarks = reason.trim();
+
+    if(!remarks){
+      alert("Please enter a reason for rejection.");
+      return;
+    }
+
+  }else{
+    const confirmed = confirm(
+      "Approve this request and generate its PDF using the embedded document template?"
+    );
+
+    if(!confirmed) return;
+  }
+
+  processingRequest = true;
+
+  document
+    .querySelectorAll(".action-cell button")
+    .forEach(button => button.disabled = true);
+
+  try{
+    await requireSession();
+
+    if(newStatus === "Approved"){
+      const request = requestsCache.find(
+        r => String(r.id) === String(id)
+      );
+
+      if(!request){
+        throw new Error("Request not found.");
+      }
+
+      await approveAndGenerate(request);
+
+      alert(
+        "Request approved successfully!\n\n" +
+        "The PDF was generated and saved to Supabase Storage.\n" +
+        "The resident can download it from Check Request Status."
+      );
+
+    }else{
+      const {data,error} = await supabaseClient
+        .from("document_requests")
+        .update({
+          status:"Rejected",
+          remarks:remarks
+        })
+        .eq("id",id)
+        .select("id,status")
+        .maybeSingle();
+
+      if(error) throw error;
+
+      if(!data){
+        throw new Error(
+          "The request was not updated. Check your database permissions."
+        );
+      }
+
+      alert("Request rejected successfully.");
+    }
+
+    await loadRequests();
+
+  }catch(error){
+    console.error("Request processing error:",error);
+
+    alert(
+      "Unable to complete this action:\n\n" +
+      (error.message || "Unknown error.") +
+      "\n\nCheck the document template, PDF libraries, Supabase Storage, and database policies."
+    );
+
+    await loadRequests();
+
+  }finally{
+    processingRequest = false;
+
+    document
+      .querySelectorAll(".action-cell button")
+      .forEach(button => button.disabled = false);
+  }
+}
+
+backToRequestsBtn.addEventListener("click",showRequestList);
+
+logoutBtn.addEventListener("click",async() => {
+  logoutBtn.disabled = true;
+  logoutBtn.textContent = "Logging out...";
+
+  try{
+    const {error} = await supabaseClient.auth.signOut();
+
+    if(error) throw error;
+
+    window.location.href = "login.html";
+
+  }catch(error){
+    console.error(error);
+
+    alert(
+      "Unable to log out: " +
+      (error.message || "Unknown error.")
+    );
+
+    logoutBtn.disabled = false;
+    logoutBtn.textContent = "Logout";
+  }
+});
+
+loadRequests();
+</script>
+
+</body>
+</html>
+

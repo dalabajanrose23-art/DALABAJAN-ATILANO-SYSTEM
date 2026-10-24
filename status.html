@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Status</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f7f4;
+            color: #1f2937;
+        }
+
+        .top-navigation {
+            background: #064e3b;
+            color: white;
+            padding: 18px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 68px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 8px 0;
+
+            position: absolute;
+            left: 25px;
+        }
+
+        .back-link:hover {
+            color: #bbf7d0;
+        }
+
+        .back-arrow {
+            font-size: 25px;
+            line-height: 1;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            padding: 0 180px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 28px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e1ebe5;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin: 0 0 30px;
+            line-height: 1.6;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #dce8e0;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 760px;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        th,
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #e2e8e4;
+            text-align: left;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+        }
+
+        th {
+            background: #064e3b;
+            color: white;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        tbody tr.request-row:nth-child(even) {
+            background: #f8fbf9;
+        }
+
+        tbody tr.request-row:hover {
+            background: #edf7f0;
+        }
+
+        .status-cell {
+            min-width: 115px;
+            width: 125px;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .status-pending {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .status-approved {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .status-rejected {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .status-other {
+            color: #374151;
+            background: #e5e7eb;
+        }
+
+        /* REMARKS */
+        .remarks-cell {
+            min-width: 180px;
+            max-width: 300px;
+            line-height: 1.6;
+        }
+
+        .certificate-cell {
+            min-width: 175px;
+        }
+
+        .download-btn {
+            background: #087f5b;
+            color: white;
+            padding: 10px 13px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #065f46;
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .file-status {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .document-type-cell {
+            min-width: 190px;
+        }
+
+        .document-type-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            min-width: 165px;
+            padding: 11px 12px;
+            background: #e8f5ec;
+            color: #065f46;
+            border: 1px solid #b7ddc4;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .document-type-btn:hover {
+            background: #d1fae5;
+        }
+
+        .document-type-btn:focus-visible {
+            outline: 2px solid #087f5b;
+            outline-offset: 3px;
+        }
+
+        .expand-arrow {
+            font-size: 17px;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .document-type-btn[aria-expanded="true"] .expand-arrow {
+            transform: rotate(180deg);
+        }
+
+        .details-row td {
+            padding: 0;
+            background: #f0f7f2;
+            border-bottom: 2px solid #c8dfd0;
+        }
+
+        .details-panel {
+            padding: 24px;
+        }
+
+        .details-heading {
+            margin: 0 0 20px;
+            color: #064e3b;
+            font-size: 19px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #cbded1;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .detail-item {
+            min-width: 0;
+            background: white;
+            padding: 14px;
+            border: 1px solid #dce8e0;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .detail-value {
+            display: block;
+            color: #1f2937;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .photo-detail {
+            grid-column: 1 / -1;
+        }
+
+        .resident-photo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            display: block;
+            background: #f8fafc;
+        }
+
+        .photo-note {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .message {
+            text-align: center;
+            padding: 28px 16px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 700px) {
+            .top-navigation {
+                padding: 14px 12px;
+                min-height: 60px;
+            }
+
+            .back-link {
+                left: 12px;
+                font-size: 13px;
+                gap: 5px;
+            }
+
+            .back-arrow {
+                font-size: 20px;
+            }
+
+            .header-title {
+                font-size: 18px;
+                padding: 0 0 0 145px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                margin: 18px auto;
+                padding: 0 10px;
+            }
+
+            .card {
+                padding: 22px 12px;
+                border-radius: 12px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+                margin-bottom: 22px;
+            }
+
+            table {
+                min-width: 740px;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+            }
+
+            .details-panel {
+                padding: 16px 12px;
+            }
+
+            .details-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .detail-item {
+                padding: 12px 10px;
+            }
+
+            .detail-label {
+                font-size: 11px;
+            }
+
+            .detail-value {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .header-title {
+                font-size: 16px;
+                padding-left: 130px;
+            }
+
+            .back-link {
+                font-size: 12px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-detail {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="top-navigation">
+    <a href="resident-dashboard.html" class="back-link">
+        <span class="back-arrow" aria-hidden="true">←</span>
+        <span>Back to Dashboard</span>
+    </a>
+
+    <h1 class="header-title">My Document Requests</h1>
+</nav>
+
+<div class="container">
+    <div class="card">
+
+        <p class="subtitle">
+            View your request status, read staff remarks,
+            and download completed certificates.
+            Select a document type to view its details.
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Download Certificate</th>
+                        <th>Document Type</th>
+                    </tr>
+                </thead>
+
+                <tbody id="requestTable">
+                    <tr>
+                        <td colspan="4" class="message">
+                            Loading requests...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+
+<script>
+const table = document.getElementById("requestTable");
+
+const CERTIFICATE_BUCKET = "completed-documents";
+const PHOTO_BUCKET = "resident-photos";
+const TOTAL_COLUMNS = 4;
+
+function addCell(row, value, className = "") {
+    const cell = document.createElement("td");
+
+    cell.textContent =
+        value !== null &&
+        value !== undefined &&
+        value !== ""
+            ? String(value)
+            : "-";
+
+    if (className) {
+        cell.className = className;
+    }
+
+    row.appendChild(cell);
+    return cell;
+}
+
+function showTableMessage(message) {
+    table.replaceChildren();
+
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = TOTAL_COLUMNS;
+    cell.className = "message";
+    cell.textContent = message;
+
+    row.appendChild(cell);
+    table.appendChild(row);
+}
+
+function addDetail(detailsGrid, label, value) {
+    const item = document.createElement("div");
+    item.className = "detail-item";
+
+    const detailLabel = document.createElement("span");
+    detailLabel.className = "detail-label";
+    detailLabel.textContent = label;
+
+    const detailValue = document.createElement("span");
+    detailValue.className = "detail-value";
+    detailValue.textContent =
+        value !== null &&
+        value !== undefined &&
+        value !== ""
+            ? String(value)
+            : "-";
+
+    item.appendChild(detailLabel);
+    item.appendChild(detailValue);
+    detailsGrid.appendChild(item);
+
+    return { item, detailValue };
+}
+
+async function getResidentPhotoUrl(photoPath) {
+    if (!photoPath) {
+        return null;
+    }
+
+    if (/^https?:\/\//i.test(photoPath)) {
+        return photoPath;
+    }
+
+    const { data, error } = await supabaseClient
+        .storage
+        .from(PHOTO_BUCKET)
+        .createSignedUrl(photoPath, 3600);
+
+    if (error) {
+        console.error("Resident photo error:", error);
+        return null;
+    }
+
+    return data?.signedUrl || null;
+}
+
+async function displayResidentPhoto(cell, request) {
+    const photoPath =
+        request.id_picture_url ||
+        request.resident_photo_path ||
+        null;
+
+    if (!photoPath) {
+        cell.textContent = "No picture uploaded";
+        cell.className = "detail-value photo-note";
+        return;
+    }
+
+    cell.textContent = "Loading picture...";
+
+    try {
+        const photoUrl = await getResidentPhotoUrl(photoPath);
+
+        cell.replaceChildren();
+
+        if (!photoUrl) {
+            cell.textContent = "Picture unavailable";
+            cell.className = "detail-value photo-note";
+            return;
+        }
+
+        const image = document.createElement("img");
+        image.src = photoUrl;
+        image.alt = "Resident 2×2 ID picture";
+        image.className = "resident-photo";
+
+        image.onerror = function() {
+            cell.textContent = "Unable to display picture";
+            cell.className = "detail-value photo-note";
+        };
+
+        cell.appendChild(image);
+
+    } catch (error) {
+        console.error("Unable to display resident picture:", error);
+        cell.textContent = "Picture unavailable";
+        cell.className = "detail-value photo-note";
+    }
+}
+
+async function downloadCertificate(request, button) {
+    if (!request.document_file_path) {
+        alert("The certificate has not been uploaded yet.");
+        return;
+    }
+
+    if (String(request.status || "").toLowerCase() !== "approved") {
+        alert("The certificate is available only for approved requests.");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Preparing...";
+
+    try {
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!sessionData.session) {
+            alert("Please log in first.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .storage
+            .from(CERTIFICATE_BUCKET)
+            .createSignedUrl(
+                request.document_file_path,
+                300,
+                { download: true }
+            );
+
+        if (error) throw error;
+
+        if (!data || !data.signedUrl) {
+            throw new Error("Supabase did not return a download link.");
+        }
+
+        window.location.assign(data.signedUrl);
+
+    } catch (error) {
+        console.error("Certificate download error:", error);
+
+        let message =
+            "Unable to download the certificate: " +
+            (error.message || "Unknown error.");
+
+        if (
+            error.message &&
+            /row-level security|security policy|403|not allowed/i.test(
+                error.message
+            )
+        ) {
+            message +=
+                "\n\nPlease check the SELECT policy for the private " +
+                "completed-documents Storage bucket.";
+        }
+
+        alert(message);
+        button.disabled = false;
+        button.textContent = "Download Certificate";
+    }
+}
+
+function toggleRequestDetails(button, detailsRow) {
+    const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+    button.setAttribute("aria-expanded", String(!isExpanded));
+    detailsRow.hidden = isExpanded;
+}
+
+function createRequestDetails(request, profile) {
+    const detailsRow = document.createElement("tr");
+    detailsRow.className = "details-row";
+    detailsRow.hidden = true;
+
+    const cell = document.createElement("td");
+    cell.colSpan = TOTAL_COLUMNS;
+
+    const panel = document.createElement("div");
+    panel.className = "details-panel";
+
+    const heading = document.createElement("h2");
+    heading.className = "details-heading";
+    heading.textContent = "Document Request Details";
+
+    const detailsGrid = document.createElement("div");
+    detailsGrid.className = "details-grid";
+
+    const photoDetail = document.createElement("div");
+    photoDetail.className = "detail-item photo-detail";
+
+    const photoLabel = document.createElement("span");
+    photoLabel.className = "detail-label";
+    photoLabel.textContent = "2×2 ID Picture";
+
+    const photoValue = document.createElement("div");
+    photoValue.className = "detail-value";
+
+    photoDetail.appendChild(photoLabel);
+    photoDetail.appendChild(photoValue);
+    detailsGrid.appendChild(photoDetail);
+
+    addDetail(
+        detailsGrid,
+        "Full Name",
+        request.full_name ||
+        request.resident_name ||
+        profile.full_name
+    );
+
+    addDetail(detailsGrid, "Sex", request.sex);
+    addDetail(detailsGrid, "Nationality", request.nationality);
+    addDetail(detailsGrid, "Age", request.age);
+
+    addDetail(
+        detailsGrid,
+        "Date of Birth",
+        request.date_of_birth ||
+        request.birth_date
+    );
+
+    addDetail(detailsGrid, "Civil Status", request.civil_status);
+
+    addDetail(
+        detailsGrid,
+        "Contact Number",
+        request.contact_number ||
+        request.phone_number ||
+        profile.contact_number
+    );
+
+    addDetail(
+        detailsGrid,
+        "Complete Address",
+        request.address ||
+        request.complete_address
+    );
+
+    addDetail(detailsGrid, "Purpose", request.purpose);
+
+    addDetail(
+        detailsGrid,
+        "Request Date",
+        request.request_date ||
+        request.created_at
+    );
+
+    panel.appendChild(heading);
+    panel.appendChild(detailsGrid);
+    cell.appendChild(panel);
+    detailsRow.appendChild(cell);
+
+    displayResidentPhoto(photoValue, request);
+
+    return detailsRow;
+}
+
+async function loadRequests() {
+    showTableMessage("Loading requests...");
+
+    try {
+        const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!sessionData.session) {
+            alert("Please log in first.");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const currentUser = sessionData.session.user;
+
+        let profile = {};
+
+        const { data: profileData, error: profileError } =
+            await supabaseClient
+                .from("users")
+                .select("full_name, contact_number")
+                .eq("auth_user_id", currentUser.id)
+                .maybeSingle();
+
+        if (profileError) {
+            console.warn("Resident profile could not be loaded:", profileError);
+        } else if (profileData) {
+            profile = profileData;
+        }
+
+        const { data: requests, error } = await supabaseClient
+            .from("document_requests")
+            .select("*")
+            .eq("auth_user_id", currentUser.id)
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (!requests || requests.length === 0) {
+            showTableMessage("You have no document requests yet.");
+            return;
+        }
+
+        table.replaceChildren();
+
+        requests.forEach(function(request, index) {
+            const row = document.createElement("tr");
+            row.className = "request-row";
+
+            const statusCell = addCell(row, "", "status-cell");
+            const statusBadge = document.createElement("span");
+            const status = String(request.status || "Pending").trim();
+            const normalized = status.toLowerCase();
+
+            statusBadge.className = "status-badge ";
+
+            if (normalized === "pending") {
+                statusBadge.className += "status-pending";
+            } else if (normalized === "approved") {
+                statusBadge.className += "status-approved";
+            } else if (normalized === "rejected") {
+                statusBadge.className += "status-rejected";
+            } else {
+                statusBadge.className += "status-other";
+            }
+
+            statusBadge.textContent = status;
+            statusCell.appendChild(statusBadge);
+
+            addCell(row, request.remarks, "remarks-cell");
+
+            const certificateCell = document.createElement("td");
+            certificateCell.className = "certificate-cell";
+
+            if (normalized === "approved" && request.document_file_path) {
+                const downloadButton = document.createElement("button");
+
+                downloadButton.type = "button";
+                downloadButton.className = "download-btn";
+                downloadButton.textContent = "Download Certificate";
+
+                downloadButton.addEventListener("click", function() {
+                    downloadCertificate(request, downloadButton);
+                });
+
+                certificateCell.appendChild(downloadButton);
+
+            } else if (normalized === "approved") {
+                const note = document.createElement("span");
+                note.className = "file-status";
+                note.textContent = "Certificate not uploaded yet";
+                certificateCell.appendChild(note);
+
+            } else {
+                const note = document.createElement("span");
+                note.className = "file-status";
+                note.textContent = "-";
+                certificateCell.appendChild(note);
+            }
+
+            row.appendChild(certificateCell);
+
+            const documentTypeCell = document.createElement("td");
+            documentTypeCell.className = "document-type-cell";
+
+            const documentButton = document.createElement("button");
+            documentButton.type = "button";
+            documentButton.className = "document-type-btn";
+            documentButton.setAttribute("aria-expanded", "false");
+
+            const documentName = document.createElement("span");
+            documentName.textContent =
+                request.document_type || "Barangay Document";
+
+            const arrow = document.createElement("span");
+            arrow.className = "expand-arrow";
+            arrow.setAttribute("aria-hidden", "true");
+            arrow.textContent = "⌄";
+
+            documentButton.appendChild(documentName);
+            documentButton.appendChild(arrow);
+            documentTypeCell.appendChild(documentButton);
+            row.appendChild(documentTypeCell);
+
+            const detailsRow = createRequestDetails(request, profile);
+
+            documentButton.addEventListener("click", function() {
+                toggleRequestDetails(documentButton, detailsRow);
+            });
+
+            table.appendChild(row);
+            table.appendChild(detailsRow);
+        });
+
+    } catch (error) {
+        console.error("Request error:", error);
+
+        showTableMessage(
+            "Failed to load your requests. Please try again."
+        );
+
+        alert("Unable to load requests: " + error.message);
+    }
+}
+
+loadRequests();
+</script>
+
+</body>
+</html>

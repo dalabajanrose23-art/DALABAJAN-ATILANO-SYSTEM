@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Barangay Login</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #111111;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 15px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .login-icon {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 22px;
+            background: #064e3b;
+            color: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 5px 15px rgba(6, 78, 59, 0.18);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 0 0 10px;
+            color: #064e3b;
+        }
+
+        .subtitle {
+            color: #777777;
+            font-size: 17px;
+            margin: 0 0 30px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border: 1px solid #e1e7e4;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: left;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #183d31;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #d5ddd8;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            color: #111111;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #064e3b;
+            box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.10);
+        }
+
+        .password-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .password-label a {
+            color: #064e3b;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .password-label a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #064e3b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #047857;
+        }
+
+        .login-btn:active {
+            transform: scale(0.99);
+        }
+
+        .register-text {
+            margin-top: 25px;
+            color: #777777;
+            font-size: 15px;
+        }
+
+        .register-text a {
+            color: #064e3b;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .login-container {
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .login-card {
+                padding: 25px 20px;
+            }
+
+            .password-label a {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-icon">
+            <i class="fa-solid fa-handshake"></i>
+        </div>
+
+        <h1>Welcome back</h1>
+
+        <p class="subtitle">
+            Log in to your account
+        </p>
+
+        <div class="login-card">
+
+            <form id="loginForm">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    required
+                >
+
+                <div class="password-label">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <a href="#">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="••••••••"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="login-btn">
+                    Log in
+                </button>
+
+            </form>
+
+        </div>
+
+        <p class="register-text">
+            Don't have an account?
+
+            <a href="register.html">
+                Create one
+            </a>
+        </p>
+
+    </div>
+
+    <!-- Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase.js"></script>
+
+    <script>
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", async function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document.getElementById("email").value.trim();
+
+                const password =
+                    document.getElementById("password").value;
+
+                const {
+                    data,
+                    error
+                } = await supabaseClient.auth.signInWithPassword({
+
+                    email: email,
+
+                    password: password
+
+                });
+
+                if (error) {
+
+                    alert(error.message);
+
+                    return;
+
+                }
+
+                const {
+                    data: userProfile,
+                    error: profileError
+                } = await supabaseClient
+                    .from("users")
+                    .select("role")
+                    .eq("email", email)
+                    .maybeSingle();
+
+                if (profileError) {
+
+                    alert(
+                        "Login successful, but user role could not be loaded: "
+                        + profileError.message
+                    );
+
+                    return;
+
+                }
+
+                if (!userProfile) {
+
+                    alert(
+                        "Login successful, but no user profile was found."
+                    );
+
+                    return;
+
+                }
+
+                const role =
+                    userProfile.role;
+
+                alert("Login successful!");
+
+                if (role === "Resident") {
+
+                    window.location.href =
+                        "resident-dashboard.html";
+
+                }
+
+                else if (role === "Staff") {
+
+                    window.location.href =
+                        "staff-dashboard.html";
+
+                }
+
+                else if (role === "Administrator") {
+
+                    window.location.href =
+                        "admin-dashboard.html";
+
+                }
+
+                else {
+
+                    alert(
+                        "Invalid user role. Please contact the administrator."
+                    );
+
+                }
+
+            });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resident Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f7f4;
+            color: #222;
+        }
+
+        header {
+            background: #064e3b;
+            color: white;
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 18px;
+            margin-left: auto;
+        }
+
+        .resident-name {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .logout-btn {
+            border: none;
+            background: #ffffff;
+            color: #064e3b;
+            padding: 10px 16px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dcfce7;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 0 auto 30px;
+            padding-top: 120px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .welcome p {
+            margin: 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        #profileMessage {
+            margin-top: 10px;
+            color: #b91c1c;
+            font-size: 14px;
+        }
+
+        .notification-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .notification-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-card h3 {
+            margin: 0 0 12px;
+            font-size: 17px;
+        }
+
+        .notification-card .count {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .pending-card {
+            border-top: 5px solid #d97706;
+        }
+
+        .pending-card h3,
+        .pending-card .count {
+            color: #b45309;
+        }
+
+        .rejected-card {
+            border-top: 5px solid #dc2626;
+        }
+
+        .rejected-card h3,
+        .rejected-card .count {
+            color: #b91c1c;
+        }
+
+        .approved-card {
+            border-top: 5px solid #16a34a;
+        }
+
+        .approved-card h3,
+        .approved-card .count {
+            color: #15803d;
+        }
+
+        .section-title {
+            margin: 0 0 18px;
+            color: #064e3b;
+            font-size: 23px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card h3 {
+            color: #064e3b;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .action-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            background: #087f5b;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 7px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #065f46;
+        }
+
+        /* NOTIFICATION MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #064e3b;
+            font-size: 21px;
+        }
+
+        .close-btn {
+            border: none;
+            background: #e5e7eb;
+            color: #222;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .request-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 9px;
+            background: #f9fafb;
+        }
+
+        .request-item h4 {
+            margin: 0 0 10px;
+            color: #064e3b;
+            font-size: 16px;
+        }
+
+        .request-item p {
+            margin: 7px 0;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            padding: 20px 0;
+        }
+
+        .error-message {
+            color: #b91c1c;
+        }
+
+        .loading-message {
+            color: #555;
+            text-align: center;
+        }
+
+        @media (max-width: 700px) {
+            header {
+                padding: 15px;
+                gap: 12px;
+            }
+
+            .header-title {
+                font-size: 17px;
+            }
+
+            .header-right {
+                gap: 10px;
+            }
+
+            .resident-name {
+                font-size: 16px;
+                text-align: right;
+                max-width: 180px;
+                overflow-wrap: anywhere;
+            }
+
+            .logout-btn {
+                padding: 9px 11px;
+                font-size: 12px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 0 auto 22px;
+                padding-top: 105px;
+            }
+
+            .notification-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .notification-card {
+                padding: 18px;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .action-card {
+                padding: 23px;
+            }
+
+            .section-title {
+                font-size: 21px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            header {
+                align-items: flex-start;
+            }
+
+            .header-title {
+                font-size: 15px;
+                max-width: 45%;
+            }
+
+            .header-right {
+                flex-wrap: wrap;
+            }
+
+            .resident-name {
+                font-size: 15px;
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-title">
+            Barangay Documents Request System
+        </div>
+
+        <div class="header-right">
+            <span id="headerResident" class="resident-name">
+                Loading...
+            </span>
+
+            <button
+                type="button"
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="welcome">
+            <p>Manage your barangay document requests easily.</p>
+            <p id="profileMessage" role="alert"></p>
+        </section>
+
+        <section class="notification-grid">
+
+            <div
+                class="notification-card pending-card"
+                onclick="showNotifications('Pending')"
+                role="button"
+                tabindex="0"
+                onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();showNotifications('Pending');}"
+            >
+                <h3>Pending Requests</h3>
+                <p class="count" id="pendingCount">0</p>
+                <p>Requests waiting for review</p>
+            </div>
+
+            <div
+                class="notification-card rejected-card"
+                onclick="showNotifications('Rejected')"
+                role="button"
+                tabindex="0"
+                onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();showNotifications('Rejected');}"
+            >
+                <h3>Rejected Requests</h3>
+                <p class="count" id="rejectedCount">0</p>
+                <p>Requests that need your attention</p>
+            </div>
+
+            <div
+                class="notification-card approved-card"
+                onclick="showNotifications('Approved')"
+                role="button"
+                tabindex="0"
+                onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();showNotifications('Approved');}"
+            >
+                <h3>Approved Requests</h3>
+                <p class="count" id="approvedCount">0</p>
+                <p>Requests approved by staff</p>
+            </div>
+
+        </section>
+
+        <section>
+            <h2 class="section-title">Resident Services</h2>
+
+            <div class="action-grid">
+
+                <div class="action-card">
+                    <h3>Request Document</h3>
+                    <p>
+                        Submit a request for your barangay documents
+                        through the online system.
+                    </p>
+
+                    <a href="request.html" class="action-btn">
+                        Request Document
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <h3>Check Request Status</h3>
+                    <p>
+                        Check the status of your document requests
+                        and read any remarks from the staff.
+                    </p>
+
+                    <a href="status.html" class="action-btn">
+                        Check Request Status
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div
+        id="notificationModal"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        onclick="if(event.target === this) closeNotifications()"
+    >
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 id="modalTitle">Notifications</h2>
+
+                <button
+                    type="button"
+                    class="close-btn"
+                    onclick="closeNotifications()"
+                    aria-label="Close notifications"
+                >
+                    &times;
+                </button>
+            </div>
+
+            <div id="notificationList">
+                <p class="loading-message">Loading notifications...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+        let residentRequests = [];
+        let currentResidentId = null;
+
+        function normalizedStatus(status) {
+            return String(status || "")
+                .trim()
+                .toLowerCase();
+        }
+
+        function formatDate(dateValue) {
+            if (!dateValue) {
+                return "Not specified";
+            }
+
+            const date = new Date(dateValue);
+
+            if (Number.isNaN(date.getTime())) {
+                return String(dateValue);
+            }
+
+            return date.toLocaleDateString("en-PH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, function (char) {
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                };
+
+                return entities[char];
+            });
+        }
+
+        async function loadNotifications(userId) {
+            const pendingCount = document.getElementById("pendingCount");
+            const rejectedCount = document.getElementById("rejectedCount");
+            const approvedCount = document.getElementById("approvedCount");
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from("document_requests")
+                    .select("id, document_type, status, remarks, request_date")
+                    .eq("auth_user_id", userId)
+                    .order("request_date", { ascending: false });
+
+                if (error) {
+                    console.error("Error loading notifications:", error);
+                    return;
+                }
+
+                residentRequests = data || [];
+
+                pendingCount.textContent = residentRequests.filter(
+                    request => normalizedStatus(request.status) === "pending"
+                ).length;
+
+                rejectedCount.textContent = residentRequests.filter(
+                    request => normalizedStatus(request.status) === "rejected"
+                ).length;
+
+                approvedCount.textContent = residentRequests.filter(
+                    request => normalizedStatus(request.status) === "approved"
+                ).length;
+
+            } catch (error) {
+                console.error("Unexpected notification error:", error);
+            }
+        }
+
+        function showNotifications(status) {
+            const modal = document.getElementById("notificationModal");
+            const modalTitle = document.getElementById("modalTitle");
+            const notificationList = document.getElementById("notificationList");
+
+            modalTitle.textContent = status + " Requests";
+            notificationList.innerHTML = "";
+
+            const matchingRequests = residentRequests.filter(
+                request => normalizedStatus(request.status) === normalizedStatus(status)
+            );
+
+            if (matchingRequests.length === 0) {
+                notificationList.innerHTML =
+                    '<p class="empty-message">No ' +
+                    escapeHTML(status.toLowerCase()) +
+                    ' requests found.</p>';
+            } else {
+                matchingRequests.forEach(request => {
+                    const item = document.createElement("div");
+                    item.className = "request-item";
+
+                    item.innerHTML = `
+                        <h4>${escapeHTML(request.document_type || "Barangay Document")}</h4>
+                        <p><strong>Status:</strong> ${escapeHTML(request.status || "Pending")}</p>
+                        <p><strong>Request Date:</strong> ${escapeHTML(formatDate(request.request_date))}</p>
+                        <p><strong>Staff Remarks:</strong> ${escapeHTML(request.remarks || "No remarks provided.")}</p>
+                    `;
+
+                    notificationList.appendChild(item);
+                });
+            }
+
+            modal.classList.add("show");
+        }
+
+        function closeNotifications() {
+            document.getElementById("notificationModal").classList.remove("show");
+        }
+
+        async function loadResident() {
+            const headerResident = document.getElementById("headerResident");
+            const profileMessage = document.getElementById("profileMessage");
+
+            try {
+                const {
+                    data: { user },
+                    error: authError
+                } = await supabaseClient.auth.getUser();
+
+                if (authError || !user) {
+                    headerResident.textContent = "Not logged in";
+                    profileMessage.textContent =
+                        "Your session could not be found. Please log in again.";
+
+                    return;
+                }
+
+                currentResidentId = user.id;
+
+                const { data: resident, error: profileError } = await supabaseClient
+                    .from("users")
+                    .select("full_name, role, auth_user_id")
+                    .eq("auth_user_id", user.id)
+                    .maybeSingle();
+
+                if (profileError) {
+                    console.error("Error loading resident profile:", profileError);
+                    headerResident.textContent = "Resident";
+                    profileMessage.textContent =
+                        "Unable to load your profile. Please try again.";
+
+                    return;
+                }
+
+                if (!resident) {
+                    headerResident.textContent = "Resident";
+                    profileMessage.textContent =
+                        "Resident profile not found. Please contact the administrator.";
+
+                    return;
+                }
+
+                if (
+                    resident.role &&
+                    resident.role.toLowerCase() !== "resident"
+                ) {
+                    headerResident.textContent = resident.full_name || "User";
+                    profileMessage.textContent =
+                        "This dashboard is intended for resident accounts.";
+
+                    return;
+                }
+
+                const residentName = resident.full_name || "Resident";
+
+                headerResident.textContent = "Welcome, " + residentName;
+
+                profileMessage.textContent = "";
+
+                await loadNotifications(user.id);
+
+            } catch (error) {
+                console.error("Unexpected profile error:", error);
+                headerResident.textContent = "Resident";
+                profileMessage.textContent =
+                    "An unexpected error occurred while loading your profile.";
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+
+                if (error) {
+                    console.error("Logout error:", error);
+                    alert("Unable to log out. Please try again.");
+                    return;
+                }
+
+                window.location.href = "login.html";
+
+            } catch (error) {
+                console.error("Unexpected logout error:", error);
+                alert("Unable to log out. Please try again.");
+            }
+        }
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                closeNotifications();
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadResident();
+        });
+    </script>
+
+</body>
+</html>

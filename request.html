@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Document | Barangay Portal</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #064e3b;
+            --primary-hover: #043d2e;
+            --background: #f3f7f4;
+            --text: #202b25;
+            --muted: #6b776f;
+            --border: #e1e8e3;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #064e3b;
+            color: white;
+            padding: 20px 25px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 76px;
+        }
+
+        .topbar-inner {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 0;
+            position: absolute;
+            left: 0;
+            white-space: nowrap;
+        }
+
+        .back-link:hover {
+            color: #bbf7d0;
+        }
+
+        .back-arrow {
+            font-size: 25px;
+            line-height: 1;
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            color: white;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            width: 100%;
+            max-width: 720px;
+            margin: 38px auto;
+            padding: 0 18px 30px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 5px 20px rgba(25, 55, 38, 0.05);
+        }
+
+        .heading-icon {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: #e6f1e9;
+            font-size: 27px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 27px;
+            margin: 0 0 9px;
+            letter-spacing: -0.5px;
+            color: #064e3b;
+        }
+
+        .subtitle {
+            margin: 0 0 26px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0 0 13px;
+            color: #064e3b;
+        }
+
+        .profile-info {
+            background: #f7faf8;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 27px;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 9px 0;
+        }
+
+        .profile-row + .profile-row {
+            border-top: 1px solid var(--border);
+        }
+
+        .profile-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .profile-value {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .auto-note {
+            color: var(--muted);
+            font-size: 12px;
+            margin: 12px 0 0;
+            line-height: 1.5;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        select {
+            display: block;
+            width: 100%;
+            min-height: 50px;
+            padding: 13px 14px;
+            border: 1px solid #ccd8cf;
+            border-radius: 10px;
+            background: white;
+            color: var(--text);
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        select:focus {
+            outline: 2px solid #a8cbb5;
+            border-color: var(--primary);
+        }
+
+        .helper-text {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 0 0 23px;
+        }
+
+        .message {
+            display: none;
+            padding: 13px 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff1f0;
+            color: #a12622;
+            border: 1px solid #efc3c0;
+        }
+
+        .message.info {
+            display: block;
+            background: #edf5ff;
+            color: #214f83;
+            border: 1px solid #cbdff7;
+        }
+
+        .continue-btn {
+            width: 100%;
+            min-height: 49px;
+            padding: 13px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .continue-btn:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        button:disabled,
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 15px 12px;
+                min-height: 65px;
+            }
+
+            .topbar-inner {
+                min-height: 35px;
+            }
+
+            .back-link {
+                font-size: 12px;
+                gap: 4px;
+            }
+
+            .back-arrow {
+                font-size: 20px;
+            }
+
+            .brand-title {
+                font-size: 16px;
+                padding-left: 125px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                margin: 22px auto;
+                padding: 0 13px 25px;
+            }
+
+            .card {
+                padding: 23px 19px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+
+            .profile-info {
+                padding: 13px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .brand-title {
+                font-size: 14px;
+                padding-left: 115px;
+            }
+
+            .back-link {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+
+        <a class="back-link" href="resident-dashboard.html">
+            <span class="back-arrow" aria-hidden="true">&#8592;</span>
+            <span>Back to Dashboard</span>
+        </a>
+
+        <p class="brand-title">Barangay Documents Request System</p>
+
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="card">
+
+        <div class="heading-icon">
+            <i class="fa-solid fa-file"></i>
+        </div>
+
+        <h1>Request a Document</h1>
+
+        <p class="subtitle">
+            Select the barangay document you need. Your resident
+            information will be loaded automatically from your profile.
+        </p>
+
+        <div id="message" class="message" role="alert"
+             aria-live="polite"></div>
+
+        <h2 class="section-title">Resident Information</h2>
+
+        <div class="profile-info">
+            <div class="profile-row">
+                <span class="profile-label">Resident Name</span>
+                <span class="profile-value" id="displayName">Loading...</span>
+            </div>
+
+            <div class="profile-row">
+                <span class="profile-label">Contact Number</span>
+                <span class="profile-value" id="displayContact">Loading...</span>
+            </div>
+
+            <p class="auto-note">
+                These details are taken from your registered account.
+                Contact the administrator if your information needs updating.
+            </p>
+        </div>
+
+        <form id="requestForm">
+
+            <label class="field-label" for="documentType">
+                Document Type
+            </label>
+
+            <select id="documentType" required disabled>
+                <option value="">Loading your profile...</option>
+            </select>
+
+            <p class="helper-text">
+                After selecting a document, continue to its corresponding
+                request form. Each document may have different requirements.
+            </p>
+
+            <button type="submit" class="continue-btn"
+                    id="continueBtn" disabled>
+                Continue &#8594;
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+    const documentType = document.getElementById("documentType");
+    const continueBtn = document.getElementById("continueBtn");
+    const message = document.getElementById("message");
+
+    let profileLoaded = false;
+
+    function showMessage(text, type = "error") {
+        message.textContent = text;
+        message.className = "message " + type;
+    }
+
+    function hideMessage() {
+        message.textContent = "";
+        message.className = "message";
+    }
+
+    async function loadResidentProfile() {
+        documentType.disabled = true;
+        continueBtn.disabled = true;
+
+        try {
+            if (typeof supabaseClient === "undefined") {
+                throw new Error(
+                    "Supabase is not configured. Please check supabase.js."
+                );
+            }
+
+            const { data, error } =
+                await supabaseClient.auth.getSession();
+
+            if (error) throw error;
+
+            if (!data.session) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const user = data.session.user;
+
+            const { data: profile, error: profileError } =
+                await supabaseClient
+                    .from("users")
+                    .select("full_name, contact_number")
+                    .eq("auth_user_id", user.id)
+                    .maybeSingle();
+
+            if (profileError) throw profileError;
+
+            if (!profile) {
+                showMessage(
+                    "Your resident profile was not found. Please contact the administrator."
+                );
+
+                documentType.innerHTML =
+                    '<option value="">Profile unavailable</option>';
+
+                return;
+            }
+
+            document.getElementById("displayName").textContent =
+                profile.full_name || "-";
+
+            document.getElementById("displayContact").textContent =
+                profile.contact_number || "-";
+
+            documentType.innerHTML = `
+                <option value="">Select a document</option>
+                <option value="Barangay ID">Barangay ID</option>
+                <option value="Barangay Clearance">Barangay Clearance</option>
+                <option value="Certificate of Residency">Certificate of Residency</option>
+                <option value="Certificate of Indigency">Certificate of Indigency</option>
+            `;
+
+            profileLoaded = true;
+            documentType.disabled = false;
+            continueBtn.disabled = false;
+
+        } catch (error) {
+            showMessage(
+                "Unable to load your resident profile: " + error.message
+            );
+        }
+    }
+
+    document.getElementById("requestForm")
+        .addEventListener("submit", function(event) {
+            event.preventDefault();
+            hideMessage();
+
+            if (!profileLoaded) {
+                showMessage(
+                    "Your profile is not ready yet. Please wait or refresh the page."
+                );
+                return;
+            }
+
+            const selected = documentType.value;
+
+            if (!selected) {
+                showMessage("Please select a document type.");
+                documentType.focus();
+                return;
+            }
+
+            if (selected === "Certificate of Indigency") {
+                window.location.href = "indigency-form.html";
+                return;
+            }
+
+            if (selected === "Barangay ID") {
+                window.location.href = "barangay-id-form.html";
+                return;
+            }
+
+            if (selected === "Barangay Clearance") {
+                window.location.href = "barangay-clearance.html";
+                return;
+            }
+
+            if (selected === "Certificate of Residency") {
+                window.location.href = "certificate-of-residency.html";
+                return;
+            }
+
+            showMessage(
+                "The request form for " + selected +
+                " has not been set up yet. Please choose a document with an available request form.",
+                "info"
+            );
+        });
+
+    loadResidentProfile();
+</script>
+
+</body>
+</html>

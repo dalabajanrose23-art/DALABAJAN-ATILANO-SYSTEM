@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate of Indigency Request</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f3f7f4;
+      color: #243447;
+    }
+
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #064e3b;
+      color: white;
+      padding: 24px 15px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .top-header h1 {
+      color: white;
+      font-size: 25px;
+      margin-bottom: 7px;
+    }
+
+    .top-header p {
+      color: #d1e7dc;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      transition: background 0.2s;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .page-content {
+      padding: 25px 15px;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e1e8e3;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      color: #176b45;
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #667085;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .profile-box {
+      background: #f0f8f3;
+      border: 1px solid #d5eadd;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 22px;
+    }
+
+    .profile-box h3 {
+      color: #176b45;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .profile-item {
+      margin-bottom: 12px;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .profile-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .profile-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .profile-value {
+      color: #475467;
+    }
+
+    .form-group {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .required {
+      color: #d92d20;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cfd6dd;
+      border-radius: 7px;
+      font-size: 14px;
+      background: white;
+      color: #243447;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #218653;
+      box-shadow: 0 0 0 2px rgba(33, 134, 83, 0.12);
+    }
+
+    input[readonly] {
+      background: #f2f4f7;
+      color: #667085;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .message {
+      display: none;
+      padding: 12px;
+      margin-bottom: 18px;
+      border-radius: 7px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success,
+    .message.error,
+    .message.info {
+      display: block;
+    }
+
+    .message.success {
+      color: #176b45;
+      background: #e9f7ef;
+      border: 1px solid #b7e2c7;
+    }
+
+    .message.error {
+      color: #b42318;
+      background: #fef3f2;
+      border: 1px solid #fecdca;
+    }
+
+    .message.info {
+      color: #175cd3;
+      background: #eff8ff;
+      border: 1px solid #b2ddff;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .submit-button {
+      background: #176b45;
+      color: white;
+    }
+
+    .submit-button:hover:not(:disabled) {
+      background: #115536;
+    }
+
+    .submit-button:disabled {
+      background: #98a2b3;
+      cursor: not-allowed;
+    }
+
+    .note {
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .top-header {
+        padding: 70px 15px 22px;
+      }
+
+      .back-link {
+        top: 12px;
+        left: 12px;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+
+      .top-header h1 {
+        font-size: 22px;
+      }
+
+      .page-content {
+        padding: 18px 12px;
+      }
+
+      .container {
+        padding: 22px 17px;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-header">
+
+    <a href="request.html" class="back-link">
+      <span aria-hidden="true">&#8592;</span>
+      <span>Back to Document Request</span>
+    </a>
+
+    <h1>Certificate of Indigency</h1>
+    <p>Barangay Documents Request System</p>
+
+  </header>
+
+  <main class="page-content">
+    <section class="container">
+
+      <div class="header">
+        <p>Please complete the required information below.</p>
+      </div>
+
+      <div id="message" class="message" role="alert"
+           aria-live="polite"></div>
+
+      <section class="profile-box">
+        <h3>Resident Information</h3>
+
+        <div class="profile-item">
+          <strong>Full Name</strong>
+          <span id="displayName" class="profile-value">Loading...</span>
+        </div>
+
+        <div class="profile-item">
+          <strong>Contact Number</strong>
+          <span id="displayContact" class="profile-value">Loading...</span>
+        </div>
+      </section>
+
+      <form id="indigencyForm">
+
+        <div class="form-group">
+          <label for="age">
+            Age <span class="required">*</span>
+          </label>
+          <input type="number" id="age" name="age"
+                 min="1" max="120" step="1"
+                 placeholder="Enter your age" required>
+        </div>
+
+        <div class="form-group">
+          <label for="civilStatus">
+            Civil Status <span class="required">*</span>
+          </label>
+          <select id="civilStatus" name="civilStatus" required>
+            <option value="">Select civil status</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Seperated">Seperated</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Divorced/Annulled">Divorced/Annulled</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="address">
+            Complete Address <span class="required">*</span>
+          </label>
+          <textarea id="address" name="address"
+                    placeholder="Enter your complete address"
+                    required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="purpose">
+            Purpose of Request <span class="required">*</span>
+          </label>
+          <textarea id="purpose" name="purpose"
+                    placeholder="Explain why you need the certificate"
+                    required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="requestDate">Date of Request</label>
+          <input type="date" id="requestDate"
+                 name="requestDate" readonly required>
+        </div>
+
+        <div class="buttons">
+          <button type="submit" id="submitBtn"
+                  class="submit-button" disabled>
+            Loading Resident Information...
+          </button>
+        </div>
+
+        <p class="note">
+          Your request will be submitted for barangay staff review.
+          Please check your information before submitting.
+        </p>
+
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase.js"></script>
+
+  <script>
+    let currentUser = null;
+    let currentProfile = null;
+
+    const form = document.getElementById("indigencyForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+    const displayName = document.getElementById("displayName");
+    const displayContact = document.getElementById("displayContact");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "message";
+    }
+
+    function getLocalDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+
+      return year + "-" + month + "-" + day;
+    }
+
+    document.getElementById("requestDate").value = getLocalDate();
+
+    async function loadResidentProfile() {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Loading Resident Information...";
+
+      try {
+        if (
+          typeof supabaseClient === "undefined" ||
+          !supabaseClient
+        ) {
+          throw new Error(
+            "supabaseClient is unavailable. Check your Supabase scripts and supabase.js."
+          );
+        }
+
+        const {
+          data: sessionData,
+          error: sessionError
+        } = await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!sessionData || !sessionData.session) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentUser = sessionData.session.user;
+
+        const {
+          data: profile,
+          error: profileError
+        } = await supabaseClient
+          .from("users")
+          .select("full_name, contact_number")
+          .eq("auth_user_id", currentUser.id)
+          .maybeSingle();
+
+        if (profileError) throw profileError;
+
+        if (!profile) {
+          displayName.textContent = "Profile not found";
+          displayContact.textContent = "Unavailable";
+
+          throw new Error(
+            "No resident profile was found for this account. Check the users table and its SELECT RLS policy."
+          );
+        }
+
+        currentProfile = profile;
+
+        displayName.textContent =
+          profile.full_name || "Name not provided";
+
+        displayContact.textContent =
+          profile.contact_number || "Contact number not provided";
+
+        if (!profile.full_name) {
+          throw new Error(
+            "The full_name field is empty in the users table."
+          );
+        }
+
+        clearMessage();
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Request";
+
+      } catch (error) {
+        console.error("Profile loading error:", error);
+
+        if (displayName.textContent === "Loading...") {
+          displayName.textContent = "Unable to load";
+        }
+
+        if (displayContact.textContent === "Loading...") {
+          displayContact.textContent = "Unable to load";
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Profile Not Loaded";
+
+        showMessage(
+          "Unable to load resident information: " +
+          (error.message || "Unknown error"),
+          "error"
+        );
+      }
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      clearMessage();
+
+      if (!currentUser || !currentProfile) {
+        showMessage(
+          "Resident information is not loaded. Please refresh the page.",
+          "error"
+        );
+        return;
+      }
+
+      const ageInput = document.getElementById("age");
+      const age = Number(ageInput.value);
+      const civilStatus =
+        document.getElementById("civilStatus").value;
+      const address =
+        document.getElementById("address").value.trim();
+      const purpose =
+        document.getElementById("purpose").value.trim();
+      const requestDate =
+        document.getElementById("requestDate").value;
+
+      if (
+        !ageInput.value ||
+        !Number.isInteger(age) ||
+        age < 1 ||
+        age > 120
+      ) {
+        showMessage(
+          "Please enter a valid age between 1 and 120.",
+          "error"
+        );
+        ageInput.focus();
+        return;
+      }
+
+      if (!civilStatus || !address || !purpose || !requestDate) {
+        showMessage(
+          "Please complete all required fields.",
+          "error"
+        );
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting Request...";
+
+      try {
+        const {
+          data: sessionData,
+          error: sessionError
+        } = await supabaseClient.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!sessionData || !sessionData.session) {
+          throw new Error(
+            "Your session expired. Please log in again."
+          );
+        }
+
+        const requestData = {
+          resident_name: currentProfile.full_name,
+          contact_number: currentProfile.contact_number || "",
+          document_type: "Certificate of Indigency",
+          purpose: purpose,
+          age: age,
+          civil_status: civilStatus,
+          address: address,
+          request_date: requestDate,
+          status: "Pending",
+          remarks: "",
+          auth_user_id: currentUser.id
+        };
+
+        const {
+          error: insertError
+        } = await supabaseClient
+          .from("document_requests")
+          .insert([requestData]);
+
+        if (insertError) throw insertError;
+
+        showMessage(
+          "Your Certificate of Indigency request was submitted successfully!",
+          "success"
+        );
+
+        form.reset();
+        document.getElementById("requestDate").value = getLocalDate();
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Request Submitted";
+
+      } catch (error) {
+        console.error("Request submission error:", error);
+
+        showMessage(
+          "Unable to submit your request: " +
+          (error.message || "Unknown error"),
+          "error"
+        );
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Request";
+      }
+    });
+
+    loadResidentProfile();
+  </script>
+</body>
+</html>

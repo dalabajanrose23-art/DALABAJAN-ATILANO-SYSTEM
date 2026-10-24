@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barangay ID Request</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7f5;
+      margin: 0;
+      padding: 0;
+      color: #26352b;
+    }
+
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #064e3b;
+      color: white;
+      padding: 24px 15px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .top-header h1 {
+      color: white;
+      font-size: 25px;
+      margin: 0 0 7px;
+    }
+
+    .top-header p {
+      color: #d1e7dc;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      transition: background 0.2s;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 25px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    h3 {
+      color: #216b3a;
+      margin-top: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    input[readonly] {
+      background: #f1f3f1;
+      color: #444;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #247b42;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #195d30;
+    }
+
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      display: none;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+    }
+
+    .error {
+      background: #ffe8e8;
+      color: #a40000;
+    }
+
+    .success {
+      background: #e5f6e9;
+      color: #17632b;
+    }
+
+    .photo-preview {
+      display: block;
+      max-width: 180px;
+      max-height: 180px;
+      object-fit: cover;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .top-header {
+        padding: 70px 15px 22px;
+      }
+
+      .top-header h1 {
+        font-size: 22px;
+      }
+
+      .back-link {
+        top: 12px;
+        left: 12px;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+
+      .container {
+        margin: 15px 10px;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-header">
+    <a href="request.html" class="back-link">
+      <span aria-hidden="true">&#8592;</span>
+      <span>Back to Document Request</span>
+    </a>
+
+    <h1>Barangay ID</h1>
+    <p>Barangay Documents Request System</p>
+  </header>
+
+  <div class="container">
+
+    <form id="barangayIdForm">
+      <h3>Resident Information</h3>
+
+      <label for="residentName">Full Name</label>
+      <input
+        type="text"
+        id="residentName"
+        placeholder="Loading resident name..."
+        readonly
+        required
+      >
+
+      <label for="contactNumber">Contact Number</label>
+      <input
+        type="text"
+        id="contactNumber"
+        placeholder="Loading contact number..."
+        readonly
+        required
+      >
+
+      <label for="dateOfBirth">Date of Birth</label>
+      <input type="date" id="dateOfBirth" required>
+
+      <label for="age">Age</label>
+      <input type="number" id="age" readonly required>
+
+      <label for="gender">Gender</label>
+      <select id="gender" required>
+        <option value="">Select gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+
+      <label for="civilStatus">Civil Status</label>
+      <select id="civilStatus" required>
+        <option value="">Select civil status</option>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Seperated">Seperated</option>
+        <option value="Widowed">Widowed</option>
+        <option value="Divorced/Annulled">Divorced/Annulled</option>
+      </select>
+
+      <label for="address">Complete Address</label>
+      <textarea
+        id="address"
+        placeholder="Enter your complete address"
+        required
+      ></textarea>
+
+      <label for="residentPhoto">Upload 2X2 ID Picture</label>
+      <input
+        type="file"
+        id="residentPhoto"
+        accept="image/*"
+        required
+      >
+
+      <img
+        id="photoPreview"
+        class="photo-preview"
+        alt="Resident photo preview"
+        style="display:none;"
+      >
+
+      <h3>Request Information</h3>
+
+      <label for="purpose">Purpose of Request</label>
+      <textarea
+        id="purpose"
+        placeholder="Enter the purpose of your Barangay ID request"
+        required
+      ></textarea>
+
+      <button type="submit" id="submitButton" disabled>
+        Loading Resident Information...
+      </button>
+
+      <div id="message" class="message"></div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase.js"></script>
+
+  <script>
+    const form = document.getElementById("barangayIdForm");
+    const residentNameInput = document.getElementById("residentName");
+    const contactNumberInput = document.getElementById("contactNumber");
+    const dateOfBirthInput = document.getElementById("dateOfBirth");
+    const ageInput = document.getElementById("age");
+    const photoInput = document.getElementById("residentPhoto");
+    const photoPreview = document.getElementById("photoPreview");
+    const submitButton = document.getElementById("submitButton");
+    const messageBox = document.getElementById("message");
+
+    let currentUser = null;
+    let currentProfile = null;
+    let profileLoaded = false;
+
+    function showMessage(message, type) {
+      messageBox.textContent = message;
+      messageBox.className = "message " + type;
+      messageBox.style.display = "block";
+    }
+
+    function hideMessage() {
+      messageBox.textContent = "";
+      messageBox.style.display = "none";
+    }
+
+    function withTimeout(promise, message, milliseconds = 12000) {
+      let timeoutId;
+
+      const timeoutPromise = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error(message));
+        }, milliseconds);
+      });
+
+      return Promise.race([promise, timeoutPromise])
+        .finally(() => clearTimeout(timeoutId));
+    }
+
+    async function loadResidentProfile() {
+      profileLoaded = false;
+      currentUser = null;
+      currentProfile = null;
+
+      residentNameInput.value = "";
+      contactNumberInput.value = "";
+      residentNameInput.placeholder = "Checking account...";
+      contactNumberInput.placeholder = "Checking account...";
+      submitButton.disabled = true;
+      submitButton.textContent = "Loading Resident Information...";
+      hideMessage();
+
+      try {
+        if (
+          typeof supabaseClient === "undefined" ||
+          !supabaseClient ||
+          !supabaseClient.auth
+        ) {
+          throw new Error(
+            "Supabase is not initialized. Please check your supabase.js file."
+          );
+        }
+
+        const sessionResult = await withTimeout(
+          supabaseClient.auth.getSession(),
+          "Timed out while checking your login session. Please refresh the page and try again."
+        );
+
+        if (sessionResult.error) {
+          throw sessionResult.error;
+        }
+
+        const session = sessionResult.data?.session;
+
+        if (!session || !session.user) {
+          showMessage(
+            "Your login session was not found. Please log in again.",
+            "error"
+          );
+
+          submitButton.textContent = "Please Log In";
+
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+
+          return;
+        }
+
+        currentUser = session.user;
+
+        const profileResult = await withTimeout(
+          supabaseClient
+            .from("users")
+            .select("full_name, contact_number")
+            .eq("auth_user_id", currentUser.id)
+            .maybeSingle(),
+          "Timed out while retrieving your resident information. Please try again."
+        );
+
+        if (profileResult.error) {
+          throw profileResult.error;
+        }
+
+        const profile = profileResult.data;
+
+        if (!profile) {
+          throw new Error(
+            "No resident profile matched your logged-in account. Please check the auth_user_id value in the users table."
+          );
+        }
+
+        if (!profile.full_name || !profile.contact_number) {
+          throw new Error(
+            "Your profile was found, but the full name or contact number is empty in the users table."
+          );
+        }
+
+        currentProfile = profile;
+
+        residentNameInput.value = profile.full_name;
+        contactNumberInput.value = profile.contact_number;
+
+        profileLoaded = true;
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Barangay ID Request";
+
+      } catch (error) {
+        console.error("Resident profile loading error:", error);
+
+        residentNameInput.placeholder = "Unable to load profile";
+        contactNumberInput.placeholder = "Unable to load profile";
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Profile Not Loaded";
+
+        showMessage(
+          error.message ||
+          "Unable to load your resident information. Please refresh the page.",
+          "error"
+        );
+      }
+    }
+
+    dateOfBirthInput.addEventListener("change", function () {
+      if (!this.value) {
+        ageInput.value = "";
+        return;
+      }
+
+      const birthDate = new Date(this.value + "T00:00:00");
+      const today = new Date();
+
+      if (birthDate > today) {
+        ageInput.value = "";
+        showMessage(
+          "Date of birth cannot be in the future.",
+          "error"
+        );
+        return;
+      }
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDifference = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+
+      ageInput.value = age >= 0 ? age : "";
+      hideMessage();
+    });
+
+    photoInput.addEventListener("change", function () {
+      const file = this.files[0];
+
+      if (!file) {
+        photoPreview.style.display = "none";
+        photoPreview.removeAttribute("src");
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        showMessage("Please select a valid image file.", "error");
+        this.value = "";
+        photoPreview.style.display = "none";
+        return;
+      }
+
+      photoPreview.src = URL.createObjectURL(file);
+      photoPreview.style.display = "block";
+      hideMessage();
+    });
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      hideMessage();
+
+      if (!profileLoaded || !currentUser || !currentProfile) {
+        showMessage(
+          "Your resident information has not loaded yet. Please try again.",
+          "error"
+        );
+        return;
+      }
+
+      if (!form.reportValidity()) {
+        return;
+      }
+
+      if (!ageInput.value || Number(ageInput.value) < 0) {
+        showMessage("Please enter a valid date of birth.", "error");
+        return;
+      }
+
+      const photoFile = photoInput.files[0];
+
+      if (!photoFile) {
+        showMessage("Please upload your resident photo.", "error");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting Request...";
+
+      let uploadedPhotoPath = null;
+
+      try {
+        const fileExtension =
+          photoFile.name.split(".").pop().toLowerCase();
+
+        const safeExtension = /^[a-z0-9]+$/.test(fileExtension)
+          ? fileExtension
+          : "jpg";
+
+        const uniqueFileName =
+          currentUser.id + "/" + Date.now() + "." + safeExtension;
+
+        const uploadResult = await withTimeout(
+          supabaseClient.storage
+            .from("resident-photos")
+            .upload(uniqueFileName, photoFile, {
+              cacheControl: "3600",
+              upsert: false,
+              contentType: photoFile.type
+            }),
+          "Photo upload timed out. Please check your connection and try again."
+        );
+
+        if (uploadResult.error) {
+          throw uploadResult.error;
+        }
+
+        uploadedPhotoPath = uploadResult.data.path;
+
+        const requestData = {
+          resident_name: currentProfile.full_name,
+          document_type: "Barangay ID",
+          purpose: document.getElementById("purpose").value.trim(),
+          request_date: new Date().toISOString().split("T")[0],
+          contact_number: currentProfile.contact_number,
+          status: "Pending",
+          remarks: "",
+          auth_user_id: currentUser.id,
+          age: Number(ageInput.value),
+          civil_status: document.getElementById("civilStatus").value,
+          address: document.getElementById("address").value.trim(),
+          date_of_birth: dateOfBirthInput.value,
+          gender: document.getElementById("gender").value,
+          resident_photo_path: uploadedPhotoPath
+        };
+
+        const insertResult = await withTimeout(
+          supabaseClient
+            .from("document_requests")
+            .insert([requestData]),
+          "Submitting the request timed out. Please check your connection before trying again."
+        );
+
+        if (insertResult.error) {
+          throw insertResult.error;
+        }
+
+        showMessage(
+          "Barangay ID request submitted successfully!",
+          "success"
+        );
+
+        form.reset();
+        ageInput.value = "";
+        photoPreview.style.display = "none";
+        photoPreview.removeAttribute("src");
+
+        residentNameInput.value = currentProfile.full_name;
+        contactNumberInput.value = currentProfile.contact_number;
+
+      } catch (error) {
+        console.error("Request submission error:", error);
+
+        showMessage(
+          error.message ||
+          "Unable to submit your request. Please try again.",
+          "error"
+        );
+
+      } finally {
+        submitButton.disabled = !profileLoaded;
+        submitButton.textContent = profileLoaded
+          ? "Submit Barangay ID Request"
+          : "Profile Not Loaded";
+      }
+    });
+
+    loadResidentProfile();
+  </script>
+</body>
+</html>

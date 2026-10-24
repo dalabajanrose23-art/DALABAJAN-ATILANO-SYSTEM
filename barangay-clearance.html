@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barangay Clearance Request</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #26352b;
+        }
+
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background: #064e3b;
+            color: white;
+            text-align: center;
+            padding: 20px 180px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .top-header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+            color: #d1fae5;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            text-align: center;
+            color: #216b3a;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        h3 {
+            color: #216b3a;
+            margin-top: 25px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 15px;
+        }
+
+        input[readonly] {
+            background: #f1f3f1;
+            color: #444;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 14px;
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        .note {
+            font-size: 12px;
+            color: #667085;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            background: #247b42;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #195d30; }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+
+        .success {
+            display: block;
+            background: #e5f6e9;
+            color: #17632b;
+        }
+
+        .error {
+            display: block;
+            background: #ffe8e8;
+            color: #a40000;
+        }
+
+        @media (max-width: 600px) {
+            .top-header {
+                padding: 58px 10px 16px;
+            }
+
+            .top-header h1 {
+                font-size: 22px;
+            }
+
+            .back-link {
+                top: 12px;
+                left: 12px;
+                transform: none;
+                font-size: 13px;
+            }
+
+            .container {
+                margin: 12px;
+                padding: 18px 14px;
+            }
+
+            h2 { font-size: 23px; }
+
+            .address-grid { grid-template-columns: 1fr; }
+
+            .full-width { grid-column: auto; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top-header">
+        <a href="request.html" class="back-link">
+            &#8592; Back to Document Request
+        </a>
+
+        <h1>Barangay Clearance</h1>
+    </header>
+
+    <div class="container">
+        <h2>Barangay Clearance Request</h2>
+
+        <p class="subtitle">
+            Please complete the required information to request
+            your Barangay Clearance.
+        </p>
+
+        <form id="clearanceForm">
+            <h3>Resident Information</h3>
+
+            <label for="residentName">Full Name</label>
+            <input type="text" id="residentName"
+                   placeholder="Loading resident name..."
+                   readonly required>
+
+            <label for="contactNumber">Contact Number</label>
+            <input type="text" id="contactNumber"
+                   placeholder="Loading contact number..."
+                   readonly required>
+
+            <label for="dateOfBirth">Date of Birth</label>
+            <input type="date" id="dateOfBirth" required>
+
+            <label for="age">Age</label>
+            <input type="number" id="age"
+                   placeholder="Age will be calculated automatically"
+                   readonly required>
+
+            <label for="civilStatus">Civil Status</label>
+            <select id="civilStatus" required>
+                <option value="">Select civil status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Seperated">Seperated</option>
+                <option value="Widowed">Widowed</option>
+                <option value="Divorced/Annulled">Divorced/Annulled</option>
+            </select>
+
+            <h3>Complete Address</h3>
+
+            <div class="address-grid">
+                <div class="full-width">
+                    <label for="street">House Number / Street</label>
+                    <input type="text" id="street"
+                           placeholder="Enter house number and street" required>
+                </div>
+
+                <div>
+                    <label for="barangay">Barangay</label>
+                    <input type="text" id="barangay"
+                           placeholder="Enter barangay" required>
+                </div>
+
+                <div>
+                    <label for="municipality">Municipality / City</label>
+                    <input type="text" id="municipality"
+                           placeholder="Enter municipality or city" required>
+                </div>
+
+                <div class="full-width">
+                    <label for="province">Province</label>
+                    <input type="text" id="province"
+                           placeholder="Enter province" required>
+                </div>
+            </div>
+
+            <h3>Request Information</h3>
+
+            <label for="documentType">Document Type</label>
+            <input type="text" id="documentType"
+                   value="Barangay Clearance" readonly>
+
+            <label for="purpose">Purpose of Request</label>
+            <textarea id="purpose"
+                      placeholder="Example: Employment, school requirement, or other purpose"
+                      required></textarea>
+
+            <label for="requestDate">Date of Request</label>
+            <input type="date" id="requestDate" readonly required>
+
+            <p class="note">
+                The request date is filled in automatically.
+            </p>
+
+            <button type="submit" id="submitButton" disabled>
+                Loading Resident Information...
+            </button>
+
+            <div id="message" class="message" role="status"></div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabase.js"></script>
+
+    <script>
+    (async function () {
+        const form = document.getElementById("clearanceForm");
+        const nameInput = document.getElementById("residentName");
+        const contactInput = document.getElementById("contactNumber");
+        const dobInput = document.getElementById("dateOfBirth");
+        const ageInput = document.getElementById("age");
+        const requestDateInput = document.getElementById("requestDate");
+        const submitButton = document.getElementById("submitButton");
+        const messageBox = document.getElementById("message");
+
+        let currentUser = null;
+        let currentProfile = null;
+        let profileLoaded = false;
+
+        function showMessage(text, type) {
+            messageBox.textContent = text;
+            messageBox.className = "message " + type;
+            messageBox.style.display = "block";
+        }
+
+        function hideMessage() {
+            messageBox.textContent = "";
+            messageBox.className = "message";
+            messageBox.style.display = "none";
+        }
+
+        function localDateString() {
+            const now = new Date();
+            return [
+                now.getFullYear(),
+                String(now.getMonth() + 1).padStart(2, "0"),
+                String(now.getDate()).padStart(2, "0")
+            ].join("-");
+        }
+
+        requestDateInput.value = localDateString();
+
+        function calculateAge(showError = true) {
+            const value = dobInput.value;
+
+            if (!value) {
+                ageInput.value = "";
+                return false;
+            }
+
+            const [year, month, day] = value.split("-").map(Number);
+            const birthDate = new Date(year, month - 1, day);
+            const today = new Date();
+            const todayOnly = new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
+            );
+
+            if (
+                birthDate > todayOnly ||
+                birthDate.getFullYear() !== year ||
+                birthDate.getMonth() !== month - 1 ||
+                birthDate.getDate() !== day
+            ) {
+                ageInput.value = "";
+
+                if (showError) {
+                    showMessage(
+                        "Please enter a valid date of birth that is not in the future.",
+                        "error"
+                    );
+                }
+
+                return false;
+            }
+
+            let age = today.getFullYear() - year;
+
+            if (
+                today.getMonth() < month - 1 ||
+                (today.getMonth() === month - 1 &&
+                 today.getDate() < day)
+            ) {
+                age--;
+            }
+
+            ageInput.value = age;
+            return true;
+        }
+
+        dobInput.addEventListener("change", function () {
+            hideMessage();
+            calculateAge();
+        });
+
+        async function loadResidentProfile() {
+            submitButton.disabled = true;
+            submitButton.textContent = "Loading Resident Information...";
+            nameInput.value = "";
+            contactInput.value = "";
+            nameInput.placeholder = "Loading resident name...";
+            contactInput.placeholder = "Loading contact number...";
+            hideMessage();
+
+            try {
+                if (
+                    typeof supabaseClient === "undefined" ||
+                    !supabaseClient ||
+                    !supabaseClient.auth
+                ) {
+                    throw new Error(
+                        "Supabase is not initialized. Check supabase.js and make sure it creates supabaseClient."
+                    );
+                }
+
+                const { data: sessionData, error: sessionError } =
+                    await supabaseClient.auth.getSession();
+
+                if (sessionError) throw sessionError;
+
+                currentUser = sessionData?.session?.user || null;
+
+                if (!currentUser) {
+                    throw new Error(
+                        "No active login session was found. Please log in again, then open the clearance form."
+                    );
+                }
+
+                const { data: profile, error: profileError } =
+                    await supabaseClient
+                        .from("users")
+                        .select("full_name, contact_number")
+                        .eq("auth_user_id", currentUser.id)
+                        .maybeSingle();
+
+                if (profileError) throw profileError;
+
+                if (!profile) {
+                    throw new Error(
+                        "No resident profile matches this account. Check that users.auth_user_id contains the logged-in account ID."
+                    );
+                }
+
+                if (!profile.full_name || !profile.contact_number) {
+                    throw new Error(
+                        "Your registered profile is missing the full name or contact number. Please update the profile in the users table."
+                    );
+                }
+
+                currentProfile = profile;
+                nameInput.value = profile.full_name;
+                contactInput.value = profile.contact_number;
+
+                profileLoaded = true;
+                submitButton.disabled = false;
+                submitButton.textContent = "Submit Clearance Request";
+
+            } catch (error) {
+                console.error("Clearance profile loading error:", error);
+
+                currentUser = null;
+                currentProfile = null;
+                profileLoaded = false;
+
+                nameInput.value = "";
+                contactInput.value = "";
+                nameInput.placeholder = "Unable to load resident profile";
+                contactInput.placeholder = "Unable to load resident profile";
+
+                submitButton.disabled = true;
+                submitButton.textContent = "Profile Not Loaded";
+
+                showMessage(
+                    "Unable to load resident information: " +
+                    (error.message || "Please refresh the page."),
+                    "error"
+                );
+            }
+        }
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            hideMessage();
+
+            if (!profileLoaded || !currentUser || !currentProfile) {
+                showMessage(
+                    "Resident information has not loaded. Please log in again and refresh this page.",
+                    "error"
+                );
+                return;
+            }
+
+            if (!form.reportValidity()) return;
+            if (!calculateAge()) return;
+
+            const fullAddress = [
+                document.getElementById("street").value.trim(),
+                document.getElementById("barangay").value.trim(),
+                document.getElementById("municipality").value.trim(),
+                document.getElementById("province").value.trim()
+            ].join(", ");
+
+            const requestData = {
+                resident_name: currentProfile.full_name,
+                contact_number: currentProfile.contact_number,
+                document_type: "Barangay Clearance",
+                purpose: document.getElementById("purpose").value.trim(),
+                request_date: requestDateInput.value,
+                status: "Pending",
+                remarks: "",
+                auth_user_id: currentUser.id,
+                age: Number(ageInput.value),
+                civil_status: document.getElementById("civilStatus").value,
+                address: fullAddress,
+                date_of_birth: dobInput.value
+            };
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Submitting Request...";
+
+            try {
+                const { error } = await supabaseClient
+                    .from("document_requests")
+                    .insert([requestData]);
+
+                if (error) throw error;
+
+                showMessage(
+                    "Your Barangay Clearance request was submitted successfully! Current status: Pending.",
+                    "success"
+                );
+
+                form.reset();
+
+                nameInput.value = currentProfile.full_name;
+                contactInput.value = currentProfile.contact_number;
+                requestDateInput.value = localDateString();
+                ageInput.value = "";
+
+            } catch (error) {
+                console.error("Clearance submission error:", error);
+
+                showMessage(
+                    "Unable to submit your request: " +
+                    (error.message || "Please try again."),
+                    "error"
+                );
+            } finally {
+                submitButton.disabled = !profileLoaded;
+                submitButton.textContent = profileLoaded
+                    ? "Submit Clearance Request"
+                    : "Profile Not Loaded";
+            }
+        });
+
+        await loadResidentProfile();
+    })();
+    </script>
+</body>
+</html>
